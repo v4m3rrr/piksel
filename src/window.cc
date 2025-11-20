@@ -1,0 +1,55 @@
+#include "piksel/window.hh"
+
+#include <GLFW/glfw3.h>
+
+#include <stdexcept>
+
+namespace piksel
+{
+  Window::Window(const char* title, uint32_t width, uint32_t height)
+    :title_(title),width_(width),height_(height)
+  {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    
+    // Tells that we only use core features
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    p_window_=glfwCreateWindow(width_,height_,title_,NULL,NULL);
+    if(p_window_==NULL)
+    {
+      glfwTerminate();
+      std::runtime_error("Failed to create window");
+    }
+
+    glfwMakeContextCurrent(p_window_);
+  }
+
+  Window::KeyState Window::getKey(int glfw_code) const
+  {
+    return (KeyState)glfwGetKey(p_window_,glfw_code);
+  }
+
+  void Window::update()
+  {
+    glfwSwapBuffers(p_window_);
+    glfwPollEvents();
+  }
+
+  void Window::close()
+  {
+    glfwSetWindowShouldClose(p_window_, true);
+  }
+
+  Window::operator bool() const
+  {
+    return !glfwWindowShouldClose(p_window_);
+  }
+
+  Window::~Window()
+  {
+    glfwTerminate();
+  }
+}

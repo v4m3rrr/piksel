@@ -22,6 +22,7 @@ add_library(${PROJECT_NAME} STATIC
     src/shader.cc
     src/image.cc
     src/texture.cc
+    src/cube_manager.cc
 )
 
 target_include_directories(${PROJECT_NAME}

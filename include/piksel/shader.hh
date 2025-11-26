@@ -46,7 +46,7 @@ namespace piksel
   private:
     std::string loadShaderSrc(const char* src_path) const;
   private:
-    GLuint program_=0;;
+    GLuint program_=0;
   };
 
 }

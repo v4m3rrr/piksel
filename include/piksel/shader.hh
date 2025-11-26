@@ -1,6 +1,6 @@
 #pragma once
 
-#include "piksel/piksel.hh"
+#include <glad/glad.h>
 
 #include <string>
 

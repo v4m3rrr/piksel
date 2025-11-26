@@ -14,9 +14,9 @@ namespace piksel
 
     p_data_.reset(
         stbi_load(path.data(),&width,&height,&channels,desired_channels));
-    if(p_data_.get())
+    if(p_data_.get()==nullptr)
     {
-      std::runtime_error("Failed to load image");
+      throw std::runtime_error("Failed to load image");
     }
   }
 

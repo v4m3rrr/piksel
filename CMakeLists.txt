@@ -23,6 +23,7 @@ add_library(${PROJECT_NAME} STATIC
     src/image.cc
     src/texture.cc
     src/cube_manager.cc
+    src/camera.cc
 )
 
 target_include_directories(${PROJECT_NAME}

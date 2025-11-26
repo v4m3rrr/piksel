@@ -1,5 +1,4 @@
 #include "piksel/texture.hh"
-#include "piksel/piksel.hh"
 
 
 namespace piksel
@@ -47,13 +46,13 @@ namespace piksel
       glDeleteTextures(1,&texture_);
   }
 
-  void Texture::bind()
+  void Texture::bind() const 
   {
     glActiveTexture(GL_TEXTURE0+texture_unit_);
     glBindTexture(GL_TEXTURE_2D,texture_);
   }
 
-  void Texture::setActiveTexture(int texture_unit)
+  void Texture::setActiveTexture(int texture_unit) 
   {
     texture_unit_=texture_unit;
   }

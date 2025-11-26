@@ -1,5 +1,4 @@
 #include "piksel/shader.hh"
-#include "piksel/piksel.hh"
 
 #include <fstream>
 #include <ios>

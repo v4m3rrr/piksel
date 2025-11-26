@@ -1,6 +1,6 @@
 #pragma once
 
-#include "piksel.hh"
+#include <glad/glad.h>
 
 namespace piksel
 {

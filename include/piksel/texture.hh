@@ -1,6 +1,7 @@
 #pragma once
 
-#include "piksel/piksel.hh"
+#include <glad/glad.h>
+
 #include "piksel/image.hh"
 
 #include <string_view>
@@ -18,7 +19,7 @@ namespace piksel
 
     ~Texture() noexcept;
 
-    void bind();
+    void bind() const;
     void setActiveTexture(int texture_unit);
     int getTextureUnit() const;
   private:

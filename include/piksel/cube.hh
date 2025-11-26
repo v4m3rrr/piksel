@@ -9,16 +9,20 @@
 
 namespace piksel { 
   struct Cube{ 
-    Cube(float angle, 
-        const glm::vec3& axis, 
-        const glm::vec3& pos, 
+    Cube(
+        float width,float height,float depth,
         std::string_view tex_filename,
         int tex_unit)
-      :trans(1.0f),tex(tex_filename,tex_unit)
+      :translate(1.0f),rotate(1.0f),scale(1.0f),tex(tex_filename,tex_unit)
     {
-      trans=glm::translate(trans,pos);
-      trans=glm::rotate(trans,glm::radians(angle),axis);
+      scale=glm::scale(scale,{width,height,depth});
     }
+
+    Cube(
+        std::string_view tex_filename,
+        int tex_unit)
+      :Cube(1.f,1.f,1.f,tex_filename,tex_unit)
+    {}
 
     static constexpr float vertices[24][5] = { 
       {-0.5f,-0.5f,-0.5f, 0.0f,0.0f}, // 0
@@ -69,7 +73,9 @@ namespace piksel {
     constexpr static unsigned int tex_offset=sizeof(float)*pos_elem;
     constexpr static unsigned int indices_len=sizeof(indices)/sizeof(unsigned int);
 
-    glm::mat4 trans;
+    glm::mat4 translate;
+    glm::mat4 rotate;
+    glm::mat4 scale;
     Texture tex;
   };
 }

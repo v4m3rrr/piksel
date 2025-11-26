@@ -1,6 +1,7 @@
 #pragma once 
 
-#include "piksel/piksel.hh"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <cstdint>
 

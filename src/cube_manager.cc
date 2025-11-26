@@ -1,7 +1,6 @@
 #include "piksel/cube_manager.hh"
 
 #include "piksel/cube.hh"
-#include "piksel/piksel.hh"
 
 namespace piksel
 {

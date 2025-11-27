@@ -21,15 +21,30 @@ namespace piksel
     if(p_window_==NULL)
     {
       glfwTerminate();
-      std::runtime_error("Failed to create window");
+      throw std::runtime_error("Failed to create window");
     }
 
     glfwMakeContextCurrent(p_window_);
+
+    //if(glfwRawMouseMotionSupported())
+    //  glfwSetInputMode(p_window_, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    //else{
+    //  throw std::runtime_error("Unsupported raw mouse motion");
+    //}
+    glfwSetInputMode(p_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);   
   }
 
   Window::KeyState Window::getKey(int glfw_code) const
   {
     return (KeyState)glfwGetKey(p_window_,glfw_code);
+  }
+
+  Window::MousePos Window::getMousePos() const
+  {
+    double x,y;
+    glfwGetCursorPos(p_window_,&x,&y);
+
+    return {x,y};
   }
 
   void Window::update()

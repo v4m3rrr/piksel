@@ -17,12 +17,18 @@ namespace piksel
       Release=GLFW_RELEASE,
       Press=GLFW_PRESS
     };
+    struct MousePos
+    {
+      double x;
+      double y;
+    };
   public:
     Window(const char* title, uint32_t width, uint32_t height);
     Window(const Window&)=delete;
     
     Window& operator=(const Window&)=delete;
     KeyState getKey(int glfw_code) const;
+    MousePos getMousePos() const;
 
     void update();
     void close();

@@ -1,5 +1,7 @@
 #include "piksel/camera.hh"
 #include "glm/ext/matrix_transform.hpp"
+#include "glm/fwd.hpp"
+#include "glm/geometric.hpp"
 
 namespace piksel
 {
@@ -11,6 +13,42 @@ namespace piksel
   {
     cam_pos_+=delta_pos;
     target_pos_+=delta_pos;
+  }
+
+  void Camera::moveLongitudinal(float value)
+  {
+    glm::vec3 delta_pos=glm::normalize(target_pos_-cam_pos_);
+    delta_pos*=value;
+
+    moveBy(delta_pos);
+  }
+
+  void Camera::moveLateral(float value)
+  {
+    glm::vec3 delta_pos=glm::cross(target_pos_-cam_pos_,up_);
+    delta_pos=glm::normalize(delta_pos);
+    delta_pos*=value;
+
+    moveBy(delta_pos);
+  }
+
+  void Camera::rotateYaw(float radinas){
+    glm::vec3 dir=target_pos_-cam_pos_;
+    glm::mat4 rotate=glm::rotate(glm::mat4(1.f),radinas,up_);
+
+    dir=glm::vec3(rotate*glm::vec4(dir,1.f));
+
+    target_pos_=cam_pos_+dir;
+  }
+
+  void Camera::rotatePitch(float radinas){
+    glm::vec3 dir=target_pos_-cam_pos_;
+    glm::mat4 rotate=
+      glm::rotate(glm::mat4(1.f),radinas,glm::cross(target_pos_-cam_pos_,up_));
+
+    dir=glm::vec3(rotate*glm::vec4(dir,1.f));
+
+    target_pos_=cam_pos_+dir;
   }
 
   glm::mat4 Camera::getCameraView() const

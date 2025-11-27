@@ -37,7 +37,7 @@ namespace piksel
       GLint log_info_len;
       glGetProgramiv(program_,GL_INFO_LOG_LENGTH,&log_info_len);
 
-      std::unique_ptr<GLchar[]> info_log(new GLchar(log_info_len));
+      auto info_log=std::make_unique<GLchar[]>(log_info_len);
       glGetProgramInfoLog(program_,log_info_len,NULL,info_log.get());
 
       std::cerr<<"Failed validate shader:\n"<<info_log<<std::endl;
@@ -101,7 +101,7 @@ namespace piksel
       GLint log_info_len;
       glGetShaderiv(shader_,GL_INFO_LOG_LENGTH,&log_info_len);
 
-      std::unique_ptr<GLchar[]> info_log(new GLchar(log_info_len));
+      auto info_log=std::make_unique<GLchar[]>(log_info_len);
       glGetShaderInfoLog(shader_,log_info_len,NULL,info_log.get());
 
       std::cerr<<"Failed compiling shader:\n"<<info_log<<std::endl;

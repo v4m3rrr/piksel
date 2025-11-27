@@ -9,6 +9,10 @@ namespace piksel
   public:
     Camera(const glm::vec3& pos, const glm::vec3& target);
     void moveBy(const glm::vec3& delta_pos);
+    void moveLongitudinal(float value);
+    void moveLateral(float value);
+    void rotateYaw(float radians);
+    void rotatePitch(float radians);
     glm::mat4 getCameraView() const;
   private:
     glm::vec3 cam_pos_;

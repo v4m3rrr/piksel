@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/suppressions.supp")
+set(LSAN_ENV_VAR "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSIONS_FILE}")
+
 set(OpenGL_GL_PREFERENCE "LEGACY")
 
 #file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
@@ -62,12 +65,19 @@ include(CTest)
 set(TEST_SOURCES
   opengl_test
   chuj_test
+  mem_test
 )
+
 
 foreach(name IN LISTS TEST_SOURCES)
   add_executable(${name} tests/${name}.cc)
+  target_link_options(${name} PUBLIC -fsanitize=address,undefined,leak)
+  target_compile_options( ${name} PUBLIC
+    -fsanitize=address,undefined,leak)
   target_link_libraries(${name} PRIVATE ${PROJECT_NAME})
-  add_test(${name} COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${name})
+  add_test(NAME ${name} COMMAND ${name})
+  set_tests_properties(${name} PROPERTIES
+    ENVIRONMENT "${LSAN_ENV_VAR}")
 endforeach()
 
 endif()

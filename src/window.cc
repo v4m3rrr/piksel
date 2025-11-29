@@ -65,6 +65,7 @@ namespace piksel
 
   Window::~Window()
   {
+    glfwDestroyWindow(p_window_);
     glfwTerminate();
   }
 }

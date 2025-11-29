@@ -1,0 +1,2 @@
+leak:libglfw.so.3
+leak:libfontconfig.so.1

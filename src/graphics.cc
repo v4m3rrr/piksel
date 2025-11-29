@@ -1,5 +1,7 @@
 #include "piksel/graphics.hh"
 
+#include "piksel/config.hh"
+
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -10,7 +12,7 @@ namespace piksel
   Graphics::Graphics(Window& wnd, const Camera& cam)
     :wnd_(wnd),
     width_(wnd_.width_),height_(wnd_.height_),
-    shader_("shaders/default.vert","shaders/default.frag"),
+    shader_(SHADER_PATH"/default.vert",SHADER_PATH"/default.frag"),
     cam_(cam)
   {
     

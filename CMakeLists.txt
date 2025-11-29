@@ -10,10 +10,10 @@ set(OpenGL_GL_PREFERENCE "LEGACY")
 
 #file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
-#configure_file(
-#  ${CMAKE_SOURCE_DIR}/include/piksel/config.hh.in
-#  ${CMAKE_BINARY_DIR}/generated/config.hh
-#)
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/piksel/config.hh.in
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/piksel/config.hh
+)
 
 add_library(${PROJECT_NAME} STATIC
     src/glad.c
@@ -28,10 +28,10 @@ add_library(${PROJECT_NAME} STATIC
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/third_party/glad/include
-        ${CMAKE_SOURCE_DIR}/third_party
-        #${CMAKE_BINARY_DIR}/generated
+      ${CMAKE_CURRENT_SOURCE_DIR}/include
+      ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include
+      ${CMAKE_CURRENT_SOURCE_DIR}/third_party
+      ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
 # --- GLFW ---

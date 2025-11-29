@@ -21,10 +21,12 @@ int main(int argc, char **argv)
   //glfwSwapInterval(0);
 
   Cube cube({1.f,1.0f,1.f,"textures/container.jpg",0});
-  Cube cube2({1.5f,1.5f,1.f,"textures/container.jpg",0});
+  Cube cube2({5.5f,1.5f,1.f,"textures/container.jpg",0});
+  Cube cube3({15.5f,1.5f,11.f,"textures/container.jpg",0});
 
   gfx.AddCube(cube);
   gfx.AddCube(cube2);
+  gfx.AddCube(cube3);
 
   float last=glfwGetTime();
   Window::MousePos prev_mouse_pos=wnd.getMousePos();
@@ -64,6 +66,9 @@ int main(int argc, char **argv)
     cube2.translate=glm::translate(glm::mat4(1.f),{0.f,0.00f,3.0f});
     cube2.rotate=glm::rotate(cube.rotate,glm::radians(360.f*dt/2),
         {1.f,0.f,1.f});
+    
+    cube3.translate=glm::translate(glm::mat4(1.f),{0.f,0.00f,0.0f});
+    cube3.rotate=glm::mat4(1.f);;
 
     gfx.Render();
     wnd.update();

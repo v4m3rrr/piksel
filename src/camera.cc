@@ -2,6 +2,7 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
 #include "glm/geometric.hpp"
+#include "glm/trigonometric.hpp"
 
 namespace piksel
 {
@@ -42,6 +43,12 @@ namespace piksel
   }
 
   void Camera::rotatePitch(float radinas){
+    static float angle=0;
+    if(glm::abs(angle+radinas)>=glm::radians(89.f)){
+      return;
+    }
+
+    angle+=radinas;
     glm::vec3 dir=target_pos_-cam_pos_;
     glm::mat4 rotate=
       glm::rotate(glm::mat4(1.f),radinas,glm::cross(target_pos_-cam_pos_,up_));

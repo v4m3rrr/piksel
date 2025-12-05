@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <memory>
 #include <stdexcept>
 
 namespace piksel
@@ -13,7 +14,8 @@ namespace piksel
     :wnd_(wnd),
     width_(wnd_.width_),height_(wnd_.height_),
     shader_(SHADER_PATH"/default.vert",SHADER_PATH"/default.frag"),
-    cam_(cam)
+    cam_(cam),
+    background_(Color::Black)
   {
     
     // first two params sets postion of lower left corner
@@ -35,23 +37,22 @@ namespace piksel
         1,GL_FALSE,glm::value_ptr(proj));
   }
 
-  void Graphics::AddCube(const Cube& cube)
+  void Graphics::addObject(std::shared_ptr<const Object> object)
   {
-    cubes_.emplace_back(cube);
+    objects_.emplace_back(object);
   }
 
-  void Graphics::Render()
+  void Graphics::render()
   {
-    clear(Color::Black);
+    clear(background_);
 
     shader_.use();
-    cube_manager_.use();
+    //cube_manager_.use();
 
-    for( auto& cube_ref : cubes_)
+    for(auto p_obj :objects_)
     {
-      auto& cube=cube_ref.get();
 
-      cube.tex.bind();
+      p_obj->tex.bind();
       shader_.set("tex",cube.tex.getTextureUnit());
 
       glm::mat4 transform=cube.translate*cube.rotate*cube.scale;
@@ -72,14 +73,19 @@ namespace piksel
           1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
 
       cube_manager_.use();
-      glDrawElements(GL_TRIANGLES,Cube::indices_len,GL_UNSIGNED_INT,0);
+      glDrawElements(GL_TRIANGLES,as,GL_UNSIGNED_INT,0);
       if(glGetError()!=GL_NO_ERROR){
         std::runtime_error("failed to set viewport");
       }
     }
   }
 
-  void Graphics::clear(Color color)
+  void Graphics::setBackground(const Color& color)
+  {
+    background_=color;
+  }
+
+  void Graphics::clear(const Color& color)
   {
     glClearColor(color.c.x,color.c.y,color.c.z,color.c.w);
     if(glGetError()!=GL_NO_ERROR){

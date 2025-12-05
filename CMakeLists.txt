@@ -27,6 +27,7 @@ add_library(${PROJECT_NAME} STATIC
     src/texture.cc
     src/cube_manager.cc
     src/camera.cc
+    src/object.cc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -66,6 +67,7 @@ set(TEST_SOURCES
   opengl_test
   chuj_test
   mem_test
+  model_load_test
 )
 
 

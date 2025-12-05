@@ -4,12 +4,11 @@
 #include "piksel/window.hh"
 #include "piksel/color.hh"
 #include "piksel/shader.hh"
-#include "piksel/cube.hh"
-#include "piksel/cube_manager.hh"
 #include "piksel/camera.hh"
+#include "piksel/object.hh"
 
 #include <vector>
-#include <functional>
+#include <memory>
 
 namespace piksel
 {
@@ -17,10 +16,11 @@ namespace piksel
   {
   public:
     Graphics(Window& wnd,const Camera& cam);
-    void AddCube(const Cube& cube);
-    void Render();
-
-    void clear(Color color);
+    void addObject(std::shared_ptr<const Object> object);
+    void render();
+    void setBackground(const Color& color);
+  private:
+    void clear(const Color& color);
   private:
     Window& wnd_;
     GladInitializer glad_init_;
@@ -29,9 +29,10 @@ namespace piksel
     const uint32_t height_;
 
     Shader shader_;
-    CubeManager cube_manager_;
 
-    std::vector<std::reference_wrapper<const Cube>> cubes_;
+    std::vector<std::shared_ptr<const Object>> objects_;
     const Camera& cam_;
+
+    Color background_;
   };
 }

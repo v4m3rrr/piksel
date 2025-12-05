@@ -10,7 +10,7 @@ namespace piksel
 {
   class Texture{
   public:
-    Texture(std::string_view path, int texture_unit);
+    Texture(std::string_view path);
     Texture(const Texture&)=delete;
     Texture(Texture&& other) noexcept;
 
@@ -19,14 +19,11 @@ namespace piksel
 
     ~Texture() noexcept;
 
-    void bind() const;
-    void setActiveTexture(int texture_unit);
-    int getTextureUnit() const;
+    GLuint getId() const {return texture_;}
   private:
     static constexpr int DESIRED_CHANNELS=4;
   private:
     GLuint texture_;
-    int texture_unit_;
 
     Image image_;
   };

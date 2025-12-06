@@ -25,9 +25,10 @@ add_library(${PROJECT_NAME} STATIC
     src/shader.cc
     src/image.cc
     src/texture.cc
-    src/cube_manager.cc
     src/camera.cc
-    src/object.cc
+    src/cube.cc
+    src/mesh.cc
+    src/model.cc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -49,6 +50,10 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${GLFW_LIBRARIES})
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 
+# --- Assimp ---
+find_package(assimp REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
+
 # --- Link dependencies ---
 # Link against pthread and dl (required by GLFW on Linux)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread dl)
@@ -68,6 +73,7 @@ set(TEST_SOURCES
   chuj_test
   mem_test
   model_load_test
+  copy_test
 )
 
 

@@ -46,16 +46,9 @@ namespace piksel
   {
     clear(background_);
 
-    shader_.use();
-    //cube_manager_.use();
-
     for(auto p_obj :objects_)
     {
-
-      p_obj->tex.bind();
-      shader_.set("tex",cube.tex.getTextureUnit());
-
-      glm::mat4 transform=cube.translate*cube.rotate*cube.scale;
+      glm::mat4 transform=p_obj->translate*p_obj->rotate*p_obj->scale;
       glUniformMatrix4fv(
           glGetUniformLocation(shader_.get(),"trans"),
           1,GL_FALSE,glm::value_ptr(transform));
@@ -72,11 +65,7 @@ namespace piksel
           glGetUniformLocation(shader_.get(),"view"),
           1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
 
-      cube_manager_.use();
-      glDrawElements(GL_TRIANGLES,as,GL_UNSIGNED_INT,0);
-      if(glGetError()!=GL_NO_ERROR){
-        std::runtime_error("failed to set viewport");
-      }
+      p_obj->draw(shader_);
     }
   }
 

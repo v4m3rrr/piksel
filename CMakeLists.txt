@@ -5,10 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+if(MSVC)
 
+else()
 set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/suppressions.supp")
 set(LSAN_ENV_VAR "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSIONS_FILE}")
-
+endif()
 set(OpenGL_GL_PREFERENCE "LEGACY")
 
 #file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
@@ -28,6 +30,7 @@ add_library(${PROJECT_NAME} STATIC
     src/camera.cc
     src/cube.cc
     src/mesh.cc
+    src/color.cc
     src/model.cc
 )
 
@@ -41,9 +44,8 @@ target_include_directories(${PROJECT_NAME}
 
 # --- GLFW ---
 find_package(glfw3 CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
 
-#target_include_directories(${PROJECT_NAME} PRIVATE ${GLFW_INCLUDE_DIRS})
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${GLFW_LIBRARIES})
 
 # --- OpenGL ---
@@ -57,6 +59,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 find_package(assimp REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
 
+if(MSVC)
+
+else()
 # --- Link dependencies ---
 # Link against pthread and dl (required by GLFW on Linux)
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread dl)
@@ -65,6 +70,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE pthread dl)
 target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall -Wextra 
 )
+endif()
 
 option(BUILD_TESTS "Build unit tests" ON)
 
@@ -81,13 +87,21 @@ set(TEST_SOURCES
 
 foreach(name IN LISTS TEST_SOURCES)
   add_executable(${name} tests/${name}.cc)
+  if(MSVC)
+
+  else()
   target_link_options(${name} PUBLIC -fsanitize=address,undefined,leak)
   target_compile_options( ${name} PUBLIC
     -fsanitize=address,undefined,leak)
+  endif()
   target_link_libraries(${name} PRIVATE ${PROJECT_NAME})
   add_test(NAME ${name} COMMAND ${name})
+  if(MSVC)
+
+  else()
   set_tests_properties(${name} PROPERTIES
     ENVIRONMENT "${LSAN_ENV_VAR}")
+  endif()
 endforeach()
 
 endif()

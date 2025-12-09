@@ -24,7 +24,6 @@ namespace piksel
     if(!scene||scene->mFlags&AI_SCENE_FLAGS_INCOMPLETE||!scene->mRootNode) 
     {
       throw std::runtime_error("Failed to load model");
-      return;
     }
 
     processNode(scene->mRootNode, scene,aiMatrix4x4());

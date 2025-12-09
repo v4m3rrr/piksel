@@ -2,6 +2,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <stdexcept>
+
 namespace piksel
 {
   Cube::Cube(
@@ -60,7 +62,7 @@ namespace piksel
     glBindVertexArray(vao_);
     glDrawElements(GL_TRIANGLES,s_indices_.size(),GL_UNSIGNED_INT,0);
     if(glGetError()!=GL_NO_ERROR){
-      std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to set viewport");
     }
     glBindVertexArray(0);
   }

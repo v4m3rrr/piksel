@@ -41,7 +41,7 @@ namespace piksel
       glGetProgramInfoLog(program_,log_info_len,NULL,info_log.get());
 
       std::cerr<<"Failed validate shader:\n"<<info_log<<std::endl;
-      std::runtime_error("Failed failed validate shader");
+      throw std::runtime_error("Failed failed validate shader");
     }
   }
 
@@ -62,7 +62,7 @@ namespace piksel
 
   std::string Shader::loadShaderSrc(const char* src_path) const
   {
-    std::ifstream fin(src_path,std::ios_base::in|std::ios_base::ate);
+    std::ifstream fin(src_path,std::ios_base::in|std::ios_base::ate | std::ios_base::binary);
     if(!fin)
     {
       throw std::runtime_error("Failed to open shader source file");
@@ -70,12 +70,9 @@ namespace piksel
 
     auto size=static_cast<std::streamoff>(fin.tellg());
     std::string source(size+1,'\0');
-    fin.seekg(0);
-    
-    if(!fin.read(source.data(),size))
-    {
-      throw std::runtime_error("Failed to load shader source file");
-    }
+    fin.seekg(0, std::ios_base::beg);
+    if(!fin.read(source.data(), size))
+      throw std::runtime_error("Failed to read shader source file");
 
     return source;
   }
@@ -105,7 +102,7 @@ namespace piksel
       glGetShaderInfoLog(shader_,log_info_len,NULL,info_log.get());
 
       std::cerr<<"Failed compiling shader:\n"<<info_log<<std::endl;
-      std::runtime_error("Failed compiling shader");
+      throw std::runtime_error("Failed compiling shader");
     }
   }
 

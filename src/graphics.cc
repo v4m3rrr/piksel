@@ -21,12 +21,12 @@ namespace piksel
     // first two params sets postion of lower left corner
     glViewport(0,0,width_,height_);
     if(glGetError()!=GL_NO_ERROR){
-      std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to set viewport");
     }
 
     glEnable(GL_DEPTH_TEST);
     if(glGetError()!=GL_NO_ERROR){
-      std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to set viewport");
     }
 
     shader_.use();
@@ -70,11 +70,11 @@ namespace piksel
   {
     glClearColor(color.c.x,color.c.y,color.c.z,color.c.w);
     if(glGetError()!=GL_NO_ERROR){
-      std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to set viewport");
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if(glGetError()!=GL_NO_ERROR){
-      std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to set viewport");
     }
   }
 }

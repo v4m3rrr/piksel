@@ -13,7 +13,7 @@ namespace piksel{
     {
       if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
       {
-        std::runtime_error("failed to init GLAD");
+        throw std::runtime_error("failed to init GLAD");
       }
     }
   };

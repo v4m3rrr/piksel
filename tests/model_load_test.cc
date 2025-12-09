@@ -18,10 +18,15 @@ int main()
   Graphics gfx(wnd,cam);
   gfx.setBackground(Color::Blue);
 
-  auto model=std::make_shared<Model>("/home/v4m3rr/Projects/piksel/F1_bolid.glb");
-  gfx.addObject(model);
+#ifdef _WIN32
+  auto model=std::make_shared<Model>("C:\\Users\\igoru\\source\\repos\\piksel\\F1_bolid.glb");
+  auto track = std::make_shared<Model>("C:\\Users\\igoru\\source\\repos\\piksel\\tor.glb");
+#else
+  auto model = std::make_shared<Model>("/home/v4m3rr/Projects/piksel/F1_bolid.glb");
+  auto track = std::make_shared<Model>("/home/v4m3rr/Projects/piksel/tor.glb");
+#endif
 
-  auto track=std::make_shared<Model>("/home/v4m3rr/Projects/piksel/tor.glb");
+  gfx.addObject(model);
   gfx.addObject(track);
   
   float last=glfwGetTime();

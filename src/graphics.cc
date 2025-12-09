@@ -53,14 +53,6 @@ namespace piksel
           glGetUniformLocation(shader_.get(),"trans"),
           1,GL_FALSE,glm::value_ptr(transform));
 
-      //const float radius = 10.0f;
-      //float camX = cos(glfwGetTime()) * radius;
-      //float camZ = sin(glfwGetTime())*radius/2.f;
-      //glm::mat4 view;
-      //view = glm::lookAt(
-      //    glm::vec3(1.0f, 0.0, camZ), 
-      //    glm::vec3(0.0, 0.0, camZ), 
-      //    glm::vec3(0.0, 1.0, 0.0)); 
       glUniformMatrix4fv(
           glGetUniformLocation(shader_.get(),"view"),
           1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));

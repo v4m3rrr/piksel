@@ -21,6 +21,11 @@ namespace piksel
     Mesh(
         const std::vector<Vertex>& vertices,
         const std::vector<unsigned int>& indices);
+    Mesh(const Mesh&)=delete;
+    Mesh(Mesh&& other) noexcept;
+
+    Mesh& operator=(const Mesh&)=delete;
+    Mesh& operator=(Mesh&&)=delete;
     virtual ~Mesh() noexcept;
 
     virtual void draw(Shader& shader) const override;

@@ -37,7 +37,6 @@ namespace piksel
         GL_FALSE,
         sizeof(Vertex),
         (void *)0);
-    //glEnableVertexArrayAttrib(vao_,0);
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(
@@ -52,6 +51,24 @@ namespace piksel
     glBindVertexArray(0);
   }
 
+  Mesh::Mesh(Mesh&& other) noexcept
+    :Object(std::move(other))
+  {
+    if(this != &other)
+    {
+      vao_=other.vao_;
+      vbo_=other.vbo_;
+      ebo_=other.ebo_;
+
+      vertices_=std::move(other.vertices_);
+      indices_=std::move(other.indices_);
+
+      other.vao_=0;
+      other.vbo_=0;
+      other.ebo_=0;
+    }
+  }
+
   Mesh::~Mesh() noexcept
   {
     glDeleteBuffers(1,&ebo_);
@@ -62,10 +79,12 @@ namespace piksel
   void Mesh::draw(Shader& shader) const
   {
     shader.use();
+    glBindVertexArray(vao_);
     glDrawElements(
         GL_TRIANGLES,indices_.size(),GL_UNSIGNED_INT,0);
     if(glGetError()!=GL_NO_ERROR){
       std::runtime_error("failed to set viewport");
     }
+    glBindVertexArray(0);
   }
 }

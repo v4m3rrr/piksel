@@ -16,7 +16,7 @@ namespace piksel
     Model(std::string_view filepath);
     virtual void draw(Shader& shader) const override;
   private:
-    void processNode(aiNode * node, const aiScene * scene);
+    void processNode(aiNode * node, const aiScene * scene, aiMatrix4x4 mat4);
   private:
     std::vector<Mesh> meshes_;
   };

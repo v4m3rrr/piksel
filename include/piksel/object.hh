@@ -17,7 +17,8 @@ namespace piksel
   protected:
     Object()
       :translate(1.f),rotate(1.f),scale(1.f)
-    {}
+    {
+    }
     virtual ~Object() noexcept=default;
   };
 }

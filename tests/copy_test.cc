@@ -763,6 +763,7 @@ int main()
     // -----------
     //Model ourModel("/home/v4m3rr/Downloads/backpack/backpack.obj");
     Model ourModel("/home/v4m3rr/Projects/piksel/F1_bolid.glb");
+    //Model ourModel("/home/v4m3rr/Projects/piksel/Box.glb");
 
     
     // draw in wireframe

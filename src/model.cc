@@ -1,17 +1,17 @@
-#define private public
 #include "piksel/model.hh"
-#undef private
+#include "piksel/shader.hh"
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <stdexcept>
 #include <vector>
-#include <iostream>
 
 namespace piksel
 {
-  Mesh processMesh(aiMesh * mesh, const aiScene * scene);
+  Mesh processMesh(aiMesh * mesh, const aiScene * scene, aiMatrix4x4 model);
+  glm::mat4 aiToGlm(const aiMatrix4x4& m);
 
   Model::Model(std::string_view filepath)
   {
@@ -27,37 +27,27 @@ namespace piksel
       return;
     }
 
-    processNode(scene->mRootNode, scene);
-    std::cout<<"# of meshes: "<<meshes_.size()<<std::endl;
-
-    int num_vert=0;
-    int num_ind=0;
-    for(const auto& mesh:meshes_)
-    {
-      num_ind+=mesh.indices_.size();
-      num_vert+=mesh.vertices_.size();
-    }
-    std::cout<<"# of indices: "<<num_ind<<std::endl;
-    std::cout<<"# of vertices: "<<num_vert<<std::endl;
+    processNode(scene->mRootNode, scene,aiMatrix4x4());
   }
 
-  void Model::processNode(aiNode * node, const aiScene * scene)
+  void Model::processNode(aiNode * node, const aiScene * scene, aiMatrix4x4 global_trans)
   {
+    global_trans=global_trans*node->mTransformation;
     for(unsigned int i=0;i<node->mNumMeshes;i++){
       aiMesh *mesh=scene->mMeshes[node->mMeshes[i]];
-      meshes_.push_back(processMesh(mesh,scene));
+      meshes_.push_back(processMesh(mesh,scene,global_trans));
     }
 
     for(unsigned int i=0;i<node->mNumChildren;i++){
-      processNode(node->mChildren[i],scene);
+      processNode(node->mChildren[i],scene,global_trans);
     }
   }
 
-  Mesh processMesh(aiMesh * mesh, const aiScene * )
+  Mesh processMesh(aiMesh * mesh, const aiScene *, aiMatrix4x4 model)
   {
     // TODO
     // Load textures.
-
+  
     std::vector<Mesh::Vertex> vertices;
     std::vector<unsigned int> indices;
 
@@ -85,14 +75,37 @@ namespace piksel
       }
     }
 
-    return Mesh(std::move(vertices),std::move(indices));
+    Mesh new_mesh(std::move(vertices),std::move(indices));
+    new_mesh.translate=aiToGlm(model);
+
+    return new_mesh;
+  }
+
+  glm::mat4 aiToGlm(const aiMatrix4x4& m)
+  {
+      return glm::mat4(
+          m.a1, m.b1, m.c1, m.d1,
+          m.a2, m.b2, m.c2, m.d2,
+          m.a3, m.b3, m.c3, m.d3,
+          m.a4, m.b4, m.c4, m.d4
+      );
   }
 
   void Model::draw(Shader& shader) const
   {
     for(const auto& mesh : meshes_)
     {
+      // TODO
+      // It all should be in render Grahpics::render()
+      glm::mat4 transform=mesh.translate*mesh.rotate*mesh.scale;
+      glUniformMatrix4fv(
+          glGetUniformLocation(shader.get(),"trans"),
+          1,GL_FALSE,glm::value_ptr(transform));
+      glUniform3f(
+          glGetUniformLocation(shader.get(),"color"),
+          1.0,0.0,0.0);
       mesh.draw(shader);
     }
   }
+
 }

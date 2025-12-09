@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.19)
 project(piksel LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -40,15 +40,18 @@ target_include_directories(${PROJECT_NAME}
 )
 
 # --- GLFW ---
-find_package(PkgConfig REQUIRED)
-pkg_search_module(GLFW REQUIRED glfw3)
+find_package(glfw3 CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${GLFW_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${GLFW_LIBRARIES})
+#target_include_directories(${PROJECT_NAME} PRIVATE ${GLFW_INCLUDE_DIRS})
+#target_link_libraries(${PROJECT_NAME} PRIVATE ${GLFW_LIBRARIES})
 
 # --- OpenGL ---
+#find_package(OpenGL CONFIG REQUIRED)
+#target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+#target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
 
 # --- Assimp ---
 find_package(assimp REQUIRED)
@@ -75,7 +78,6 @@ set(TEST_SOURCES
   model_load_test
   copy_test
 )
-
 
 foreach(name IN LISTS TEST_SOURCES)
   add_executable(${name} tests/${name}.cc)

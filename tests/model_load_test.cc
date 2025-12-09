@@ -3,8 +3,6 @@
 #include "piksel/camera.hh"
 #include "piksel/color.hh"
 #include "piksel/model.hh"
-//#include "piksel/cube.hh"
-//#include "piksel/config.hh"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -18,14 +16,14 @@ int main()
   Window wnd("Model load test", 1280,720);
   Camera cam({0.f,0.f,10.f},{0.f,0.f,0.f});
   Graphics gfx(wnd,cam);
-  gfx.setBackground(Color::Black);
+  gfx.setBackground(Color::Blue);
 
   auto model=std::make_shared<Model>("/home/v4m3rr/Projects/piksel/F1_bolid.glb");
   gfx.addObject(model);
-  
-  //auto cube=std::make_shared<Cube>(ASSET_PATH "/container.jpg");
-  //gfx.addObject(cube);
 
+  auto track=std::make_shared<Model>("/home/v4m3rr/Projects/piksel/tor.glb");
+  gfx.addObject(track);
+  
   float last=glfwGetTime();
   Window::MousePos prev_mouse_pos=wnd.getMousePos();
   while(wnd)
@@ -56,10 +54,6 @@ int main()
     prev_mouse_pos.x=mouse_pos.x;
     cam.rotatePitch((prev_mouse_pos.y-mouse_pos.y)*dt/3.f);
     prev_mouse_pos.y=mouse_pos.y;
-
-    //cube->translate=glm::translate(glm::mat4(1.f),{0.f,0.00f,5.0f});
-    //cube->rotate=glm::rotate(cube->rotate,glm::radians(360.f*dt/2),
-    //    {1.f,0.f,1.f});
 
     gfx.render();
     wnd.update();

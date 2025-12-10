@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(piksel LANGUAGES C CXX)
+project(piksel VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -133,4 +133,27 @@ install(EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}Targets.cmake
     NAMESPACE ${PROJECT_NAME}::
     DESTINATION lib/cmake/${PROJECT_NAME}
+)
+
+include(CMakePackageConfigHelpers)
+
+# 1. Configure the Config file (Fills in @PACKAGE_INIT@ etc.)
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/pikselConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/pikselConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/piksel
+)
+
+# 2. Generate a Version file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/pikselConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION} # Make sure project(piksel VERSION x.x.x) is set, or hardcode 0.1.0
+    COMPATIBILITY SameMajorVersion
+)
+
+# 3. Install the Config and Version files
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/pikselConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/pikselConfigVersion.cmake"
+    DESTINATION lib/cmake/piksel
 )

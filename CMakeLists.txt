@@ -33,9 +33,10 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 target_include_directories(${PROJECT_NAME}
-    PUBLIC
-      ${CMAKE_CURRENT_SOURCE_DIR}/include
-      ${CMAKE_CURRENT_BINARY_DIR}/generated
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated>
+    $<INSTALL_INTERFACE:include>
 )
 
 # --- GLFW ---
@@ -120,6 +121,11 @@ install(TARGETS ${PROJECT_NAME}
 # Install the public headers
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION include
+    FILES_MATCHING PATTERN "*.hh"
+)
+
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/generated/piksel/
+    DESTINATION include/piksel
     FILES_MATCHING PATTERN "*.hh"
 )
 

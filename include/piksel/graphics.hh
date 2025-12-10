@@ -9,13 +9,16 @@
 
 #include <vector>
 #include <memory>
+#include <string_view>
 
 namespace piksel
 {
   class Graphics
   {
   public:
-    Graphics(Window& wnd,const Camera& cam);
+    Graphics(
+        Window& wnd,const Camera& cam, 
+        std::string_view vertex_shader, std::string_view fragement_shader);
     void addObject(std::shared_ptr<const Object> object);
     void render();
     void setBackground(const Color& color);

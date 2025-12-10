@@ -1,7 +1,10 @@
 {
   "dependencies": [
+    "assimp",
     "glfw3",
+    "glm",
     "opengl",
-    "assimp"
+    "stb",
+    "glad"
   ]
 }

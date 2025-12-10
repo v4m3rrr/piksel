@@ -96,13 +96,14 @@ namespace piksel
     {
       // TODO
       // It all should be in render Grahpics::render()
-      glm::mat4 transform=mesh.translate*mesh.rotate*mesh.scale;
+      glm::mat4 mesh_transform=mesh.getTransform();
+      glm::mat4 transform=this->getTransform()*mesh_transform;
       glUniformMatrix4fv(
           glGetUniformLocation(shader.get(),"trans"),
           1,GL_FALSE,glm::value_ptr(transform));
       glUniform3f(
           glGetUniformLocation(shader.get(),"color"),
-          1.0,0.0,0.0);
+          color.r(),color.g(),color.b());
       mesh.draw(shader);
     }
   }

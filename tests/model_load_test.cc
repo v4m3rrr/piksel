@@ -1,8 +1,10 @@
+#include "glm/ext/matrix_transform.hpp"
 #include "piksel/window.hh"
 #include "piksel/graphics.hh"
 #include "piksel/camera.hh"
 #include "piksel/color.hh"
 #include "piksel/model.hh"
+#include "piksel/config.hh"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,18 +17,25 @@ int main()
   constexpr float cam_speed=10.f; 
   Window wnd("Model load test", 1280,720);
   Camera cam({0.f,0.f,10.f},{0.f,0.f,0.f});
-  Graphics gfx(wnd,cam);
+  Graphics gfx(
+      wnd,cam,SHADERS_PATH"/single_color.vert",SHADERS_PATH"/single_color.frag");
   gfx.setBackground(Color::Blue);
 
 #ifdef _WIN32
   auto model=std::make_shared<Model>("C:\\Users\\igoru\\source\\repos\\piksel\\F1_bolid.glb");
   auto track = std::make_shared<Model>("C:\\Users\\igoru\\source\\repos\\piksel\\tor.glb");
 #else
-  auto model = std::make_shared<Model>("/home/v4m3rr/Projects/piksel/F1_bolid.glb");
-  auto track = std::make_shared<Model>("/home/v4m3rr/Projects/piksel/tor.glb");
+  auto car = std::make_shared<Model>(ASSETS_PATH"/models/F1_bolid.glb");
+  auto track = std::make_shared<Model>(ASSETS_PATH"/models/tor.glb");
 #endif
 
-  gfx.addObject(model);
+  car->color=Color::Green;
+  track->color=Color::White;
+
+  double scale_factor=0.25;
+  track->scale=glm::scale(track->scale,glm::vec3(scale_factor));
+
+  gfx.addObject(car);
   gfx.addObject(track);
   
   float last=glfwGetTime();

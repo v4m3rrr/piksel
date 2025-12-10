@@ -34,8 +34,8 @@ namespace piksel
     };
   public:
     Shader(
-      const char* vertex_shader_src_path, 
-      const char* fragment_shader_src_path);
+      std::string_view vertex_shader_src_path, 
+      std::string_view fragment_shader_src_path);
 
     GLuint get() noexcept;
 

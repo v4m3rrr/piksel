@@ -1,4 +1,4 @@
 #pragma once
 
-#define ASSET_PATH "@CMAKE_CURRENT_SOURCE_DIR@/textures"
-#define SHADER_PATH "@CMAKE_CURRENT_SOURCE_DIR@/shaders"
+#define ASSETS_PATH "@CMAKE_CURRENT_SOURCE_DIR@/assets"
+#define SHADERS_PATH "@CMAKE_CURRENT_SOURCE_DIR@/shaders"

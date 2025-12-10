@@ -19,12 +19,13 @@ int main(int argc, char **argv)
   Window wnd("Test",1600,900);
 
   Camera cam({10.f,0.f,0.f},{0.f,0.f,0.f});
-  Graphics gfx(wnd, cam);
+  Graphics gfx(
+      wnd,cam,SHADERS_PATH"/texture.vert",SHADERS_PATH"/texture.frag");
   //glfwSwapInterval(0);
 
-  auto cube=std::make_shared<Cube>(1.f,1.0f,1.f,ASSET_PATH"/container.jpg");
-  auto cube2=std::make_shared<Cube>(5.5f,1.5f,1.f,ASSET_PATH"/container.jpg");
-  auto cube3=std::make_shared<Cube>(150.5f,1.5f,110.f,ASSET_PATH"/grass.jpg");
+  auto cube=std::make_shared<Cube>(1.f,1.0f,1.f,ASSETS_PATH"/textures/container.jpg");
+  auto cube2=std::make_shared<Cube>(5.5f,1.5f,1.f,ASSETS_PATH"/textures/container.jpg");
+  auto cube3=std::make_shared<Cube>(150.5f,1.5f,110.f,ASSETS_PATH"/textures/grass.jpg");
 
   gfx.addObject(cube);
   gfx.addObject(cube2);

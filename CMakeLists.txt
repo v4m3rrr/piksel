@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 if(MSVC)
 
 else()
@@ -12,8 +13,6 @@ set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/suppressions.supp")
 set(LSAN_ENV_VAR "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSIONS_FILE}")
 endif()
 set(OpenGL_GL_PREFERENCE "LEGACY")
-
-#file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/piksel/config.hh.in
@@ -37,8 +36,6 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME}
     PUBLIC
       ${CMAKE_CURRENT_SOURCE_DIR}/include
-      ${CMAKE_CURRENT_SOURCE_DIR}/third_party/glad/include
-      ${CMAKE_CURRENT_SOURCE_DIR}/third_party
       ${CMAKE_CURRENT_BINARY_DIR}/generated
 )
 
@@ -46,18 +43,25 @@ target_include_directories(${PROJECT_NAME}
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
 
-#target_link_libraries(${PROJECT_NAME} PRIVATE ${GLFW_LIBRARIES})
-
 # --- OpenGL ---
-#find_package(OpenGL CONFIG REQUIRED)
-#target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
-#target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
+
+# --- glm ---
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+
+# --- glad ---
+find_package(glad CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
 
 # --- Assimp ---
 find_package(assimp REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
+
+# --- Stb ---
+find_package(Stb REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
 
 if(MSVC)
 
@@ -82,7 +86,6 @@ set(TEST_SOURCES
   chuj_test
   mem_test
   model_load_test
-  copy_test
 )
 
 foreach(name IN LISTS TEST_SOURCES)

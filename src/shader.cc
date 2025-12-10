@@ -9,14 +9,14 @@
 namespace piksel
 {
   Shader::Shader(
-    const char* vertex_shader_src_path, 
-    const char* fragment_shader_src_path
+    std::string_view vertex_shader_src_path, 
+    std::string_view fragment_shader_src_path
   )
   {
-    std::string src=loadShaderSrc(vertex_shader_src_path);
+    std::string src=loadShaderSrc(vertex_shader_src_path.data());
     CompileShader vertex_sh(src,ShaderType::VertexType);
 
-    src=loadShaderSrc(fragment_shader_src_path);
+    src=loadShaderSrc(fragment_shader_src_path.data());
     CompileShader frag_sh(src,ShaderType::FragmentType);
 
     program_=glCreateProgram();

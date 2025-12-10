@@ -1,4 +1,5 @@
 #include "piksel/cube.hh"
+#include "piksel/shader.hh"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -59,6 +60,11 @@ namespace piksel
   void Cube::draw(Shader& shader) const 
   {
     shader.use();
+
+    glUniform1i(glGetUniformLocation(shader.get(),"texture0"),0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture.getId());
+
     glBindVertexArray(vao_);
     glDrawElements(GL_TRIANGLES,s_indices_.size(),GL_UNSIGNED_INT,0);
     if(glGetError()!=GL_NO_ERROR){

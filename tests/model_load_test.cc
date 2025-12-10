@@ -21,13 +21,8 @@ int main()
       wnd,cam,SHADERS_PATH"/single_color.vert",SHADERS_PATH"/single_color.frag");
   gfx.setBackground(Color::Blue);
 
-#ifdef _WIN32
-  auto model=std::make_shared<Model>("C:\\Users\\igoru\\source\\repos\\piksel\\F1_bolid.glb");
-  auto track = std::make_shared<Model>("C:\\Users\\igoru\\source\\repos\\piksel\\tor.glb");
-#else
   auto car = std::make_shared<Model>(ASSETS_PATH"/models/F1_bolid.glb");
   auto track = std::make_shared<Model>(ASSETS_PATH"/models/tor.glb");
-#endif
 
   car->color=Color::Green;
   track->color=Color::White;

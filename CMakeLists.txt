@@ -19,8 +19,7 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/generated/piksel/config.hh
 )
 
-add_library(${PROJECT_NAME} STATIC
-    src/glad.c
+add_library(${PROJECT_NAME} STATIC  
     src/graphics.cc
     src/window.cc
     src/shader.cc

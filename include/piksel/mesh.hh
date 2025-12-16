@@ -21,6 +21,10 @@ namespace piksel
     Mesh(
         const std::vector<Vertex>& vertices,
         const std::vector<unsigned int>& indices);
+    Mesh(
+        const std::vector<Vertex>& vertices,
+        const std::vector<unsigned int>& indices,
+        const glm::mat4& transform);
     Mesh(const Mesh&)=delete;
     Mesh(Mesh&& other) noexcept;
 

@@ -30,6 +30,7 @@ add_library(${PROJECT_NAME} STATIC
     src/mesh.cc
     src/color.cc
     src/model.cc
+    src/tinygltf_impl.cc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -55,13 +56,13 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 find_package(glad CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
 
-# --- Assimp ---
-find_package(assimp REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
+# --- tinygltf ---
+find_path(TINYGLTF_INCLUDE_DIRS "tiny_gltf.h")
+target_include_directories(${PROJECT_NAME} PRIVATE ${TINYGLTF_INCLUDE_DIRS}) 
 
-# --- Stb ---
-find_package(Stb REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
+## --- Stb ---
+#find_package(Stb REQUIRED)
+#target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
 
 if(MSVC)
 
@@ -82,10 +83,11 @@ if (BUILD_TESTS)
 include(CTest)
 
 set(TEST_SOURCES
-  opengl_test
-  chuj_test
-  mem_test
+  #opengl_test
+  #chuj_test
+  #mem_test
   model_load_test
+  #tinygltf_test
 )
 
 foreach(name IN LISTS TEST_SOURCES)

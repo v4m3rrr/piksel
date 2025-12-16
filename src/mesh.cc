@@ -1,11 +1,37 @@
 #include "piksel/mesh.hh"
 #include "piksel/shader.hh"
 
+#include <glm/ext/matrix_transform.hpp>
 #include <stdexcept>
 #include <vector>
 
 namespace piksel
 {
+  Mesh::Mesh(
+      const std::vector<Vertex>& vertices,
+      const std::vector<unsigned int>& indices,
+      const glm::mat4& transform)
+    :Mesh(vertices,indices)
+  {
+    const glm::mat4& M=transform;
+
+    glm::vec3 translation = glm::vec3(M[3]);
+
+    glm::vec3 scale;
+    scale.x = glm::length(glm::vec3(M[0]));
+    scale.y = glm::length(glm::vec3(M[1]));
+    scale.z = glm::length(glm::length(glm::vec3(M[2])));
+
+    glm::mat3 rotation;
+    rotation[0] = glm::vec3(M[0]) / scale.x;
+    rotation[1] = glm::vec3(M[1]) / scale.y;
+    rotation[2] = glm::vec3(M[2]) / scale.z;
+
+    this->translate=glm::translate(glm::mat4(1.f),translation);
+    this->rotate=glm::mat4(rotation);
+    this->scale=glm::scale(glm::mat4(1.f),scale);
+  }
+
   Mesh::Mesh(
       const std::vector<Vertex>& vertices,
       const std::vector<unsigned int>& indices)

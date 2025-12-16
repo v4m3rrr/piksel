@@ -1,8 +1,10 @@
 #include "piksel/model.hh"
+
 #include "piksel/shader.hh"
 
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/fwd.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <stdexcept>
@@ -10,86 +12,149 @@
 
 namespace piksel
 {
-  Mesh processMesh(aiMesh * mesh, const aiScene * scene, aiMatrix4x4 model);
-  glm::mat4 aiToGlm(const aiMatrix4x4& m);
-
+  glm::mat4 getNodeTransform(const tinygltf::Node& node);
   Model::Model(std::string_view filepath)
   {
-    Assimp::Importer importer;
-    const aiScene* scene = 
-      importer.ReadFile(
-          filepath.data(),
-          aiProcess_Triangulate|aiProcess_FlipUVs);	
-	
-    if(!scene||scene->mFlags&AI_SCENE_FLAGS_INCOMPLETE||!scene->mRootNode) 
-    {
+    tinygltf::Model model;
+
+    tinygltf::TinyGLTF loader;
+    std::string err;
+    std::string warn;
+
+    bool res = loader.LoadBinaryFromFile(&model, &err, &warn, filepath.data());
+
+    if (!res)
       throw std::runtime_error("Failed to load model");
-    }
 
-    processNode(scene->mRootNode, scene,aiMatrix4x4());
-  }
-
-  void Model::processNode(aiNode * node, const aiScene * scene, aiMatrix4x4 global_trans)
-  {
-    global_trans=global_trans*node->mTransformation;
-    for(unsigned int i=0;i<node->mNumMeshes;i++){
-      aiMesh *mesh=scene->mMeshes[node->mMeshes[i]];
-      meshes_.push_back(processMesh(mesh,scene,global_trans));
-    }
-
-    for(unsigned int i=0;i<node->mNumChildren;i++){
-      processNode(node->mChildren[i],scene,global_trans);
+    auto scene=model.scenes[model.defaultScene];
+    for(auto node_index : scene.nodes)
+    {
+      bindModelNodes(model,model.nodes[node_index],glm::mat4(1.f));
     }
   }
 
-  Mesh processMesh(aiMesh * mesh, const aiScene *, aiMatrix4x4 model)
+  void Model::bindModelNodes(
+      const tinygltf::Model& model,
+      const tinygltf::Node& node,
+      const glm::mat4& transform)
   {
-    // TODO
-    // Load textures.
-  
-    std::vector<Mesh::Vertex> vertices;
-    std::vector<unsigned int> indices;
+    glm::mat4 trans=getNodeTransform(node)*transform;
 
-    for(unsigned int i=0;i<mesh->mNumVertices;i++)
+    if (node.mesh >= 0)
     {
-      Mesh::Vertex vertex;
+      const tinygltf::Mesh& mesh = model.meshes[node.mesh];
 
-      auto ai_pos=mesh->mVertices[i];
-      vertex.pos.x=ai_pos.x;
-      vertex.pos.y=ai_pos.y;
-      vertex.pos.z=ai_pos.z;
+      std::vector<piksel::Mesh::Vertex> vertices;
+      std::vector<unsigned int> indices;
 
-      vertex.uv.x=0.f;
-      vertex.uv.y=0.f;
-
-      vertices.push_back(std::move(vertex));
-    }
-
-    for(unsigned int i=0;i<mesh->mNumFaces;i++)
-    {
-      aiFace face=mesh->mFaces[i];
-      for(unsigned int j=0;j<face.mNumIndices;j++)
+      for (const auto& primitive : mesh.primitives)
       {
-        indices.push_back(face.mIndices[j]);
+        if (primitive.mode != TINYGLTF_MODE_TRIANGLES)
+          throw std::runtime_error("TYLKO TROJKATY");
+
+        auto posIt = primitive.attributes.find("POSITION");
+        if (posIt == primitive.attributes.end())
+          throw std::runtime_error("TYLKO TROJKATY");
+
+        const tinygltf::Accessor& posAccessor =
+          model.accessors[posIt->second];
+        const tinygltf::BufferView& posView =
+          model.bufferViews[posAccessor.bufferView];
+        const tinygltf::Buffer& posBuffer =
+          model.buffers[posView.buffer];
+
+        size_t stride = posAccessor.ByteStride(posView);
+        if (stride == 0) stride = sizeof(float) * 3;
+
+        const unsigned char* posData =
+          posBuffer.data.data() +
+          posView.byteOffset +
+          posAccessor.byteOffset;
+
+        uint32_t baseVertex = static_cast<uint32_t>(vertices.size());
+
+        for (size_t v = 0; v < posAccessor.count; ++v)
+        {
+          const float* p =
+            reinterpret_cast<const float*>(posData + stride * v);
+
+          piksel::Mesh::Vertex vert{};
+          vert.pos = { p[0], p[1], p[2] };
+          vert.uv  = { 0.0f, 0.0f };
+
+          vertices.push_back(vert);
+        }
+
+        if (primitive.indices < 0)
+          continue;
+
+        const tinygltf::Accessor& idxAccessor =
+          model.accessors[primitive.indices];
+        const tinygltf::BufferView& idxView =
+          model.bufferViews[idxAccessor.bufferView];
+        const tinygltf::Buffer& idxBuffer =
+          model.buffers[idxView.buffer];
+
+        const unsigned char* idxData =
+          idxBuffer.data.data() +
+          idxView.byteOffset +
+          idxAccessor.byteOffset;
+
+        for (size_t i = 0; i < idxAccessor.count; ++i)
+        {
+          uint32_t index = 0;
+
+          switch (idxAccessor.componentType)
+          {
+          case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
+            index = reinterpret_cast<const uint16_t*>(idxData)[i];
+            break;
+          case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
+            index = reinterpret_cast<const uint32_t*>(idxData)[i];
+            break;
+          default:
+            throw std::runtime_error("Unsupported index type");
+          }
+
+          indices.push_back(index + baseVertex);
+        }
       }
+
+      this->meshes_.emplace_back(vertices, indices,trans);
     }
 
-    Mesh new_mesh(std::move(vertices),std::move(indices));
-    new_mesh.translate=aiToGlm(model);
 
-    return new_mesh;
+    for (int childIndex : node.children)
+    {
+      bindModelNodes(model, model.nodes[childIndex],trans);
+    }
   }
 
-  glm::mat4 aiToGlm(const aiMatrix4x4& m)
+  glm::mat4 getNodeTransform(const tinygltf::Node& node)
   {
-      return glm::mat4(
-          m.a1, m.b1, m.c1, m.d1,
-          m.a2, m.b2, m.c2, m.d2,
-          m.a3, m.b3, m.c3, m.d3,
-          m.a4, m.b4, m.c4, m.d4
-      );
-  }
+    glm::mat4 T(1.f);
+    glm::mat4 R(1.f);
+    glm::mat4 S(1.f);
 
+    if(node.translation.size()==3)
+      T=glm::translate(glm::mat4(1.f),{
+          node.translation[0],node.translation[1],node.translation[2]});
+
+    if(node.rotation.size()==4)
+      R=glm::mat4_cast(glm::quat{
+          (float)node.rotation[3],
+          (float)node.rotation[0],
+          (float)node.rotation[1],
+          (float)node.rotation[2]
+          });
+
+    if(node.scale.size()==3)
+      S=glm::scale(glm::mat4(1.f),{
+          node.scale[0],node.scale[1],node.scale[2]
+          });
+
+    return (T*R*S);
+  }
   void Model::draw(Shader& shader) const
   {
     for(const auto& mesh : meshes_)
@@ -107,5 +172,4 @@ namespace piksel
       mesh.draw(shader);
     }
   }
-
 }

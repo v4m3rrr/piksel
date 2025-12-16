@@ -1,9 +1,8 @@
-#include "glm/ext/matrix_transform.hpp"
+#include "piksel/model.hh"
 #include "piksel/window.hh"
 #include "piksel/graphics.hh"
 #include "piksel/camera.hh"
 #include "piksel/color.hh"
-#include "piksel/model.hh"
 #include "piksel/config.hh"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,20 +17,16 @@ int main()
   Window wnd("Model load test", 1280,720);
   Camera cam({0.f,0.f,10.f},{0.f,0.f,0.f});
   Graphics gfx(
-      wnd,cam,SHADERS_PATH"/single_color.vert",SHADERS_PATH"/single_color.frag");
+      wnd,cam,PIKSEL_SHADERS_PATH"/single_color.vert",PIKSEL_SHADERS_PATH"/single_color.frag");
   gfx.setBackground(Color::Blue);
 
-  auto car = std::make_shared<Model>(ASSETS_PATH"/models/F1_bolid.glb");
-  auto track = std::make_shared<Model>(ASSETS_PATH"/models/tor.glb");
+  auto fox = std::make_shared<Model>(PIKSEL_ASSETS_PATH"/models/Fox.glb");
 
-  car->color=Color::Green;
-  track->color=Color::White;
+  fox->color=Color::Green;
 
   double scale_factor=0.25;
-  track->scale=glm::scale(track->scale,glm::vec3(scale_factor));
 
-  gfx.addObject(car);
-  gfx.addObject(track);
+  gfx.addObject(fox);
   
   float last=glfwGetTime();
   Window::MousePos prev_mouse_pos=wnd.getMousePos();

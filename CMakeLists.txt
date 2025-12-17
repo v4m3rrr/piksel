@@ -159,3 +159,10 @@ install(FILES
     "${CMAKE_CURRENT_BINARY_DIR}/pikselConfigVersion.cmake"
     DESTINATION lib/cmake/piksel
 )
+
+install(
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/shaders/
+    DESTINATION share/piksel/shaders
+    FILES_MATCHING
+    PATTERN "*"
+)

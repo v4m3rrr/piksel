@@ -1,4 +1,5 @@
 #include "piksel/graphics.hh"
+#include "piksel/glad_initializer.hh"
 
 
 #include <GLFW/glfw3.h>
@@ -32,7 +33,7 @@ namespace piksel
 
     shader_.use();
     auto proj=glm::perspective(
-        glm::radians(45.0f),(float)wnd_.width_/wnd_.height_,0.1f,100.0f);
+        glm::radians(45.0f),(float)wnd_.width_/wnd_.height_,0.1f,1000.0f);
     glUniformMatrix4fv(
         glGetUniformLocation(shader_.get(),"proj"),
         1,GL_FALSE,glm::value_ptr(proj));

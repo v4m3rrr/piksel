@@ -14,7 +14,7 @@ namespace piksel
   {
   public:
     Model()=default;
-    Model(std::string_view filepath);
+    Model(std::string_view filepath, float stroke);
     virtual void draw(Shader& shader) const override;
   private:
     void bindModelNodes(
@@ -22,6 +22,7 @@ namespace piksel
         const tinygltf::Node& node, 
         const glm::mat4& transform);
   private:
+    float stroke_;
     std::vector<Mesh> meshes_;
   };
 }

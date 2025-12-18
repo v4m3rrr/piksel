@@ -107,7 +107,7 @@ namespace piksel
     shader.use();
     glBindVertexArray(vao_);
     glDrawElements(
-        GL_TRIANGLES,indices_.size(),GL_UNSIGNED_INT,0);
+        GL_LINES,indices_.size(),GL_UNSIGNED_INT,0);
     if(glGetError()!=GL_NO_ERROR){
       std::runtime_error("failed to set viewport");
     }

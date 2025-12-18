@@ -34,9 +34,8 @@ namespace piksel
 
   Mesh::Mesh(
       const std::vector<Vertex>& vertices,
-      const std::vector<unsigned int>& indices,
-      float stroke)
-    : stroke_(stroke),vertices_(vertices),indices_(indices)
+      const std::vector<unsigned int>& indices)
+    : vertices_(vertices),indices_(indices)
   {
     glGenVertexArrays(1,&vao_);
     glBindVertexArray(vao_);
@@ -107,7 +106,6 @@ namespace piksel
   {
     shader.use();
     glBindVertexArray(vao_);
-    glLineWidth(1.f);
     glDrawElements(
         GL_LINES,indices_.size(),GL_UNSIGNED_INT,0);
     if(glGetError()!=GL_NO_ERROR){

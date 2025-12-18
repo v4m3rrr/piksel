@@ -20,8 +20,7 @@ namespace piksel
   public:
     Mesh(
         const std::vector<Vertex>& vertices,
-        const std::vector<unsigned int>& indices,
-        float stroke=1.f);
+        const std::vector<unsigned int>& indices);
     Mesh(
         const std::vector<Vertex>& vertices,
         const std::vector<unsigned int>& indices,
@@ -36,7 +35,6 @@ namespace piksel
     virtual void draw(Shader& shader) const override;
   private:
     GLuint vao_,vbo_,ebo_;
-    float stroke_;
 
     std::vector<Vertex> vertices_;
     std::vector<unsigned int> indices_;

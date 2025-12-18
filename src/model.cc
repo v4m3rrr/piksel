@@ -13,7 +13,8 @@
 namespace piksel
 {
   glm::mat4 getNodeTransform(const tinygltf::Node& node);
-  Model::Model(std::string_view filepath)
+  Model::Model(std::string_view filepath,float stroke)
+    :stroke_(stroke)
   {
     tinygltf::Model model;
 
@@ -170,6 +171,8 @@ namespace piksel
       glUniform3f(
           glGetUniformLocation(shader.get(),"color"),
           color.r(),color.g(),color.b());
+
+      glLineWidth(stroke_);
       mesh.draw(shader);
     }
   }

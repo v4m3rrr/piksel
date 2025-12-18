@@ -5,6 +5,7 @@
 #include "piksel/color.hh"
 #include "piksel/config.hh"
 
+#include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
@@ -20,11 +21,10 @@ int main()
       wnd,cam,PIKSEL_SHADERS_PATH"/single_color.vert",PIKSEL_SHADERS_PATH"/single_color.frag");
   gfx.setBackground(Color::Blue);
 
-  auto fox = std::make_shared<Model>(PIKSEL_ASSETS_PATH"/models/Fox.glb");
-
+  auto fox = std::make_shared<Model>(PIKSEL_ASSETS_PATH"/models/Fox.glb",1.f);
   fox->color=Color::Green;
-
-  double scale_factor=0.25;
+  float scale_factor=10.25f;
+  fox->scale=glm::scale(glm::mat4(1.f),glm::vec3(1.f)*scale_factor);
 
   gfx.addObject(fox);
   

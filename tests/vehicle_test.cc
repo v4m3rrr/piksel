@@ -49,7 +49,6 @@ public:
   void addGround(const btVector3& dims, const btVector3& pos);
   void addSphere(btScalar radius, const btVector3& pos);
   void Step(double dt);
-
 public:
   static constexpr double GRAVITATIONAL_ACCELERATION=10.;
 private:
@@ -76,13 +75,12 @@ int main(int argc, char** argv)
       PIKSEL_SHADERS_PATH"/single_color.frag");
   gfx.setBackground(Color::Blue);
 
-  auto fox = std::make_shared<Model>("Bolid_F1.glb");
+  auto fox = std::make_shared<Model>("Bolid_F1.glb",1.f);
   fox->color=Color::Green;
   float scale_factor=12.25;
   fox->scale=glm::scale(fox->scale,glm::vec3(1.f)*scale_factor);
   gfx.addObject(fox);
 
-  //glDisable(GL_DEPTH_TEST);
   btVector3 ground_dims(100.,100.,100.);
   btVector3 size=ground_dims;
   auto ground=std::make_shared<Wireframe>(5.0f);

@@ -157,6 +157,7 @@ namespace piksel
   }
   void Model::draw(Shader& shader) const
   {
+    shader.use();
     for(const auto& mesh : meshes_)
     {
       // TODO

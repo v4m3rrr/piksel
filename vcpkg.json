@@ -4,6 +4,7 @@
     "glm",
     "opengl",
     "glad",
-    "tinygltf"
+    "tinygltf",
+    "bullet3"
   ]
 }

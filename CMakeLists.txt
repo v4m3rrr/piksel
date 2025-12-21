@@ -62,16 +62,8 @@ find_path(TINYGLTF_INCLUDE_DIRS "tiny_gltf.h")
 target_include_directories(${PROJECT_NAME} PRIVATE ${TINYGLTF_INCLUDE_DIRS}) 
 
 # --- bullet3 ---
-find_package(Bullet CONFIG REQUIRED)
-# specific set: BulletSoftBody, BulletDynamics, BulletInverseDynamics,
-#               BulletCollision, Bullet3Common, LinearMath
-#target_include_directories(piksel PUBLIC ${BULLET_INCLUDE_DIRS})
-
-# 3. Link the libraries using the legacy variable
-target_link_libraries(piksel PUBLIC ${BULLET_LIBRARIES})
-## --- Stb ---
-#find_package(Stb REQUIRED)
-#target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
+#find_package(Bullet CONFIG REQUIRED)
+#target_link_libraries(piksel PUBLIC ${BULLET_LIBRARIES})
 
 if(MSVC)
 
@@ -96,7 +88,7 @@ set(TEST_SOURCES
   #chuj_test
   #mem_test
   model_load_test
-  vehicle_test
+  #vehicle_test
   #tinygltf_test
 )
 

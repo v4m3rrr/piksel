@@ -63,8 +63,8 @@ find_path(TINYGLTF_INCLUDE_DIRS "tiny_gltf.h")
 target_include_directories(${PROJECT_NAME} PRIVATE ${TINYGLTF_INCLUDE_DIRS}) 
 
 # --- bullet3 ---
-find_package(Bullet CONFIG REQUIRED)
-target_link_libraries(piksel PUBLIC ${BULLET_LIBRARIES})
+#find_package(Bullet CONFIG REQUIRED)
+#target_link_libraries(piksel PUBLIC ${BULLET_LIBRARIES})
 
 if(MSVC)
 
@@ -89,9 +89,9 @@ set(TEST_SOURCES
   #chuj_test
   #mem_test
   model_load_test
-  vehicle_test
+  #vehicle_test
   line_test
-  colider_test
+  #colider_test
   #tinygltf_test
 )
 

@@ -8,10 +8,11 @@
 namespace piksel
 {
   Mesh::Mesh(
+      std::string_view name,
       const std::vector<Vertex>& vertices,
       const std::vector<unsigned int>& indices,
       const glm::mat4& transform)
-    :Mesh(vertices,indices)
+    :Mesh(name,vertices,indices)
   {
     const glm::mat4& M=transform;
 
@@ -33,9 +34,10 @@ namespace piksel
   }
 
   Mesh::Mesh(
+      std::string_view name,
       const std::vector<Vertex>& vertices,
       const std::vector<unsigned int>& indices)
-    : vertices_(vertices),indices_(indices)
+    : vertices_(vertices),indices_(indices),name_(name)
   {
     glGenVertexArrays(1,&vao_);
     glBindVertexArray(vao_);
@@ -78,21 +80,17 @@ namespace piksel
   }
 
   Mesh::Mesh(Mesh&& other) noexcept
-    :Object(std::move(other))
+    : Object(std::move(other)),
+      vao_(other.vao_),
+      vbo_(other.vbo_),
+      ebo_(other.ebo_),
+      vertices_(std::move(other.vertices_)),
+      indices_(std::move(other.indices_)),
+      name_(std::move(other.name_))
   {
-    if(this != &other)
-    {
-      vao_=other.vao_;
-      vbo_=other.vbo_;
-      ebo_=other.ebo_;
-
-      vertices_=std::move(other.vertices_);
-      indices_=std::move(other.indices_);
-
-      other.vao_=0;
-      other.vbo_=0;
-      other.ebo_=0;
-    }
+    other.vao_ = 0;
+    other.vbo_ = 0;
+    other.ebo_ = 0;
   }
 
   Mesh::~Mesh() noexcept
@@ -109,7 +107,7 @@ namespace piksel
     glDrawElements(
         GL_LINES,indices_.size(),GL_UNSIGNED_INT,0);
     if(glGetError()!=GL_NO_ERROR){
-      std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to set viewport");
     }
     glBindVertexArray(0);
   }

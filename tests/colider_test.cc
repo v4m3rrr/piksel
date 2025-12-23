@@ -26,6 +26,8 @@
 
 #include <LinearMath/btMatrix3x3.h>
 #include <LinearMath/btQuaternion.h>
+#include <LinearMath/btIDebugDraw.h>
+
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -38,7 +40,7 @@
 //#include "piksel/cube.hh"
 #include "piksel/wireframe.hh"
 
-#include <stdio.h>
+#include <iostream>
 #include <memory>
 
 class Simulation
@@ -49,7 +51,7 @@ public:
 
   void addGround(const btVector3& dims, const btVector3& pos);
   void addSphere(btScalar radius, const btVector3& pos);
-  void addCar(const std::vector<btVector3>& vertices, const btVector3& origin);
+  void addCar(const std::vector<btVector3>& vertices, const btTransform& trans);
   void Step(double dt);
 public:
   static constexpr double GRAVITATIONAL_ACCELERATION=10.;
@@ -63,6 +65,62 @@ public:
   btAlignedObjectArray<std::shared_ptr<btCollisionShape>> collision_shapes;
 };
 
+inline glm::vec3 bt2glm(const btVector3& vec)
+{
+  return glm::vec3(vec.x(),vec.y(),vec.z());
+}
+
+inline btVector3 glm2bt(const glm::vec3& vec)
+{
+  return btVector3(vec.x,vec.y,vec.z);
+}
+
+class BulletDebugDrawer : public btIDebugDraw
+{
+public:
+  int debugMode;
+  piksel::Graphics& gfx;
+
+  BulletDebugDrawer(piksel::Graphics& gfx)
+      : debugMode(btIDebugDraw::DBG_DrawWireframe),gfx(gfx)
+  {}
+
+  void drawLine(
+      const btVector3& from,
+      const btVector3& to,
+      const btVector3& color
+  ) override
+  {
+    //std::cout<<"drawing line"<<std::endl;
+    gfx.drawLine(piksel::Line{bt2glm(from),bt2glm(to),bt2glm(color)});
+  }
+
+  void drawContactPoint(
+      const btVector3& pointOnB,
+      const btVector3& normalOnB,
+      btScalar,
+      int,
+      const btVector3& color
+  ) override
+  {
+    drawLine(
+      pointOnB,
+      pointOnB + normalOnB * 0.2f,
+      color
+    );
+  }
+
+  void reportErrorWarning(const char* warningString) override
+  {
+      std::cout << "Bullet: " << warningString << std::endl;
+  }
+
+  void draw3dText(const btVector3&, const char*) override {}
+
+  void setDebugMode(int mode) override { debugMode = mode; }
+  int  getDebugMode() const override { return debugMode; }
+};
+
 using namespace piksel;
 void handleCameraMovement(const Window& wnd, Camera& cam,float cam_speed,float dt);
 
@@ -70,37 +128,63 @@ int main(int argc, char** argv)
 {
   constexpr float cam_speed=50.f; 
   Window wnd("Model load test", 1280,720);
-  Camera cam({0.f,-56.f,100.f},{0.f,-56.f,0.f});
+  Camera cam({0.f,0.f,10.f},{0.f,0.f,0.f});
   Graphics gfx(
       wnd,cam,
       PIKSEL_SHADERS_PATH"/single_color.vert",
       PIKSEL_SHADERS_PATH"/single_color.frag");
-  gfx.setBackground(Color::Blue);
+  gfx.setBackground(Color::Black);
+
+  BulletDebugDrawer debug_drawer(gfx);
   Simulation simulation;
+  simulation.dynamics_world->setDebugDrawer(&debug_drawer);
+  debug_drawer.setDebugMode(
+      btIDebugDraw::DBG_DrawWireframe |
+      btIDebugDraw::DBG_DrawContactPoints |
+      btIDebugDraw::DBG_DrawAabb
+  );
 
   ////////////// Car //////////////
   auto car = std::make_shared<Model>("Bolid_F1.glb",1.f);
-  car->color=Color::Green;
-  //float scale_factor=12.25;
-  //car->scale=glm::scale(car->scale,glm::vec3(1.f)*scale_factor);
+  car->color=Color::White;
+  float scale_factor=12.25;
+  car->scale=glm::scale(car->scale,glm::vec3(1.f)*scale_factor);
   gfx.addObject(car);
 
   std::vector<btVector3> car_vertices;
   const auto& car_meshes=car->getMeshes();
   
+  btTransform car_transform;
+  car_transform.setIdentity();
   for(const auto& car_mesh : car_meshes)
   {
     auto vertices= car_mesh.getVertices();
-    if(vertices.size()<1000)
+    if(car_mesh.getName()!="Cylinder.002")
       continue;
+
+    btVector3 model_translate=glm2bt(glm::vec3(car->translate[3]));
+    btVector3 car_translate=glm2bt(glm::vec3(car_mesh.translate[3]));
+
+    std::cout<<"Name: "<<car_mesh.getName()<<std::endl;
+    car_translate*=scale_factor;
+    car_translate+=model_translate;
+    car_transform.setOrigin(car_translate);
+
+    btMatrix3x3 scale;
+    scale.setIdentity();
+    scale=scale*scale_factor;
+
+    // TODO 
+    // ROTATION
+    car_transform.setBasis(scale);
+
     for(const auto& v:vertices)
     {
       btVector3 vec(v.pos.x,v.pos.y,v.pos.z);
       car_vertices.push_back(vec);
     }
   }
-
-  simulation.addCar(car_vertices,{0.1,-56.,0});
+  simulation.addCar(car_vertices,car_transform);
 
   ////////////// Ground //////////////
   btVector3 ground_dims(100.,100.,100.);
@@ -109,7 +193,7 @@ int main(int argc, char** argv)
   ground->color=Color::Green;
   ground->scale=glm::scale(glm::mat4(1.f),{size.x(),size.y(),size.z()});
   gfx.addObject(ground);
-  simulation.addGround(ground_dims,{0.,-56.,0.});
+  simulation.addGround(ground_dims,{0.,0.,0.});
 
   float last=glfwGetTime();
   while(wnd)
@@ -119,6 +203,7 @@ int main(int argc, char** argv)
     last=right_now;
 
     simulation.Step(dt);
+    simulation.dynamics_world->debugDrawWorld();
 
     if(wnd.getKey(GLFW_KEY_ESCAPE)==Window::KeyState::Press)
       wnd.close();
@@ -128,7 +213,8 @@ int main(int argc, char** argv)
     //print positions of all objects
     for (int j = simulation.dynamics_world->getNumCollisionObjects() - 1; j >= 0; j--)
     {
-      btCollisionObject* obj = simulation.dynamics_world->getCollisionObjectArray()[j];
+      btCollisionObject* obj = 
+        simulation.dynamics_world->getCollisionObjectArray()[j];
       btRigidBody* body = btRigidBody::upcast(obj);
       btTransform trans;
       if (body && body->getMotionState())
@@ -155,16 +241,13 @@ int main(int argc, char** argv)
       }
       if(j==0)
       {
-        printf("world pos object %d = %f,%f,%f\n", 
-            j, float(size.getX()), 
-            float(size.getY()), float(size.getZ()));
         ground->translate=glm::translate(glm::mat4(1.f),{pos.x(),pos.y(),pos.z()});
         ground->rotate=rot;
       }
 
-      printf("world pos object %d = %f,%f,%f\n", 
-          j, float(trans.getOrigin().getX()), 
-          float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+      //printf("world pos object %d = %f,%f,%f\n", 
+      //    j, float(trans.getOrigin().getX()), 
+      //    float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
     }
 
     gfx.render();
@@ -289,7 +372,8 @@ void Simulation::addSphere(btScalar radius, const btVector3& origin)
   collision_shapes.push_back(col_shape);
 }
 
-void Simulation::addCar(const std::vector<btVector3>& vertices, const btVector3& origin)
+void Simulation::addCar(
+    const std::vector<btVector3>& vertices, const btTransform& trans)
 {
 
   std::shared_ptr<btConvexHullShape> hull(new btConvexHullShape());
@@ -303,11 +387,9 @@ void Simulation::addCar(const std::vector<btVector3>& vertices, const btVector3&
   hull->optimizeConvexHull();
   hull->initializePolyhedralFeatures();
 
-  btTransform transform;
-  transform.setIdentity();
-  transform.setOrigin(origin);
+  btTransform transform=trans;
 
-  btScalar mass(1.f);
+  btScalar mass(0.f);
 
   //rigidbody is dynamic if and only if mass is non zero, otherwise static
   bool is_dynamic = (mass != 0.f);
@@ -335,5 +417,4 @@ void Simulation::addCar(const std::vector<btVector3>& vertices, const btVector3&
 void Simulation::Step(double dt)
 {
   dynamics_world->stepSimulation(dt, 5);
-
 }

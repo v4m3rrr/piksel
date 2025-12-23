@@ -3,6 +3,7 @@
 #include "piksel/shader.hh"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <stdexcept>
 
@@ -45,6 +46,10 @@ namespace piksel
   void Wireframe::draw(Shader& shader) const 
   {
     shader.use();
+    glm::mat4 transform=this->getTransform();
+    glUniformMatrix4fv(
+        glGetUniformLocation(shader.get(),"trans"),
+        1,GL_FALSE,glm::value_ptr(transform));
     glUniform3f(
         glGetUniformLocation(shader.get(),"color"),
         color.r(),color.g(),color.b());

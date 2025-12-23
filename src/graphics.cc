@@ -32,11 +32,11 @@ namespace piksel
     }
 
     shader_.use();
-    auto proj=glm::perspective(
+    project_=glm::perspective(
         glm::radians(45.0f),(float)wnd_.width_/wnd_.height_,0.1f,1000.0f);
     glUniformMatrix4fv(
         glGetUniformLocation(shader_.get(),"proj"),
-        1,GL_FALSE,glm::value_ptr(proj));
+        1,GL_FALSE,glm::value_ptr(project_));
   }
 
   void Graphics::addObject(std::shared_ptr<const Object> object)
@@ -48,19 +48,22 @@ namespace piksel
   {
     clear(background_);
 
+    shader_.use();
+    glUniformMatrix4fv(
+      glGetUniformLocation(shader_.get(),"view"),
+      1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
+
     for(auto p_obj :objects_)
     {
-      glm::mat4 transform=p_obj->translate*p_obj->rotate*p_obj->scale;
-      glUniformMatrix4fv(
-          glGetUniformLocation(shader_.get(),"trans"),
-          1,GL_FALSE,glm::value_ptr(transform));
-
-      glUniformMatrix4fv(
-          glGetUniformLocation(shader_.get(),"view"),
-          1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
-
       p_obj->draw(shader_);
     }
+
+    liner_.draw(project_*cam_.getCameraView());
+  }
+
+  void Graphics::drawLine(const Line& line)
+  {
+    liner_.addLine(line);
   }
 
   void Graphics::setBackground(const Color& color)

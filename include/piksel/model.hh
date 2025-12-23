@@ -15,7 +15,10 @@ namespace piksel
   public:
     Model()=default;
     Model(std::string_view filepath, float stroke);
+
     virtual void draw(Shader& shader) const override;
+    const std::vector<Mesh>& getMeshes() const;
+
   private:
     void bindModelNodes(
         const tinygltf::Model& model, 

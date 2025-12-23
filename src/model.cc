@@ -121,7 +121,7 @@ namespace piksel
         }
       }
 
-      this->meshes_.emplace_back(vertices, indices,trans);
+      this->meshes_.emplace_back(node.name,vertices, indices,trans);
     }
 
 
@@ -175,5 +175,10 @@ namespace piksel
       glLineWidth(stroke_);
       mesh.draw(shader);
     }
+  }
+
+  const std::vector<Mesh>& Model::getMeshes() const
+  {
+    return meshes_;
   }
 }

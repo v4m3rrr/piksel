@@ -6,6 +6,8 @@
 #include "piksel/shader.hh"
 #include "piksel/camera.hh"
 #include "piksel/object.hh"
+#include "piksel/line.hh"
+#include "piksel/liner.hh"
 
 #include <vector>
 #include <memory>
@@ -22,6 +24,7 @@ namespace piksel
     void addObject(std::shared_ptr<const Object> object);
     void render();
     void setBackground(const Color& color);
+    void drawLine(const Line& line);
   private:
     void clear(const Color& color);
   private:
@@ -32,9 +35,11 @@ namespace piksel
     const uint32_t height_;
 
     Shader shader_;
+    Liner liner_;
 
     std::vector<std::shared_ptr<const Object>> objects_;
     const Camera& cam_;
+    glm::mat4 project_;
 
     Color background_;
   };

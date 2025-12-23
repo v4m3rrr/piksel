@@ -19,7 +19,7 @@ namespace piksel
     Color color;
   protected:
     Object()
-      :translate(1.f),rotate(1.f),scale(1.f),color(Color::Black)
+      :translate(1.f),rotate(1.f),scale(1.f),color(Color::White)
     {
     }
     virtual ~Object() noexcept=default;

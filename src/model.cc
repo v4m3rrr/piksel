@@ -13,6 +13,11 @@
 namespace piksel
 {
   glm::mat4 getNodeTransform(const tinygltf::Node& node);
+
+  Model::Model(float stroke)
+    :stroke_(stroke)
+  {}
+
   Model::Model(std::string_view filepath,float stroke)
     :stroke_(stroke)
   {
@@ -32,6 +37,63 @@ namespace piksel
     {
       bindModelNodes(model,model.nodes[node_index],glm::mat4(1.f));
     }
+  }
+
+
+  glm::mat4 getNodeTransform(const tinygltf::Node& node)
+  {
+    glm::mat4 T(1.f);
+    glm::mat4 R(1.f);
+    glm::mat4 S(1.f);
+
+    if(node.translation.size()==3)
+      T=glm::translate(glm::mat4(1.f),{
+          node.translation[0],node.translation[1],node.translation[2]});
+
+    if(node.rotation.size()==4)
+      R=glm::mat4_cast(glm::quat{
+          (float)node.rotation[3],
+          (float)node.rotation[0],
+          (float)node.rotation[1],
+          (float)node.rotation[2]
+          });
+
+    if(node.scale.size()==3)
+      S=glm::scale(glm::mat4(1.f),{
+          node.scale[0],node.scale[1],node.scale[2]
+          });
+
+    return (T*R*S);
+  }
+  void Model::draw(Shader& shader) const
+  {
+    shader.use();
+    for(const auto& mesh : meshes_)
+    {
+      // TODO
+      // It all should be in render Grahpics::render()
+      glm::mat4 mesh_transform=mesh.getTransform();
+      glm::mat4 transform=this->getTransform()*mesh_transform;
+      glUniformMatrix4fv(
+          glGetUniformLocation(shader.get(),"trans"),
+          1,GL_FALSE,glm::value_ptr(transform));
+      glUniform3f(
+          glGetUniformLocation(shader.get(),"color"),
+          color.r(),color.g(),color.b());
+
+      glLineWidth(stroke_);
+      mesh.draw(shader);
+    }
+  }
+
+  const std::vector<Mesh>& Model::getMeshes() const
+  {
+    return meshes_;
+  }
+
+  void Model::addMesh(Mesh&& mesh)
+  {
+    meshes_.push_back(std::move(mesh));
   }
 
   void Model::bindModelNodes(
@@ -129,56 +191,5 @@ namespace piksel
     {
       bindModelNodes(model, model.nodes[childIndex],trans);
     }
-  }
-
-  glm::mat4 getNodeTransform(const tinygltf::Node& node)
-  {
-    glm::mat4 T(1.f);
-    glm::mat4 R(1.f);
-    glm::mat4 S(1.f);
-
-    if(node.translation.size()==3)
-      T=glm::translate(glm::mat4(1.f),{
-          node.translation[0],node.translation[1],node.translation[2]});
-
-    if(node.rotation.size()==4)
-      R=glm::mat4_cast(glm::quat{
-          (float)node.rotation[3],
-          (float)node.rotation[0],
-          (float)node.rotation[1],
-          (float)node.rotation[2]
-          });
-
-    if(node.scale.size()==3)
-      S=glm::scale(glm::mat4(1.f),{
-          node.scale[0],node.scale[1],node.scale[2]
-          });
-
-    return (T*R*S);
-  }
-  void Model::draw(Shader& shader) const
-  {
-    shader.use();
-    for(const auto& mesh : meshes_)
-    {
-      // TODO
-      // It all should be in render Grahpics::render()
-      glm::mat4 mesh_transform=mesh.getTransform();
-      glm::mat4 transform=this->getTransform()*mesh_transform;
-      glUniformMatrix4fv(
-          glGetUniformLocation(shader.get(),"trans"),
-          1,GL_FALSE,glm::value_ptr(transform));
-      glUniform3f(
-          glGetUniformLocation(shader.get(),"color"),
-          color.r(),color.g(),color.b());
-
-      glLineWidth(stroke_);
-      mesh.draw(shader);
-    }
-  }
-
-  const std::vector<Mesh>& Model::getMeshes() const
-  {
-    return meshes_;
   }
 }

@@ -13,12 +13,13 @@ namespace piksel
   class Model : public Object
   {
   public:
-    Model()=default;
+    Model(float stroke);
     Model(std::string_view filepath, float stroke);
 
     virtual void draw(Shader& shader) const override;
     const std::vector<Mesh>& getMeshes() const;
 
+    void addMesh(Mesh&& mesh);
   private:
     void bindModelNodes(
         const tinygltf::Model& model, 

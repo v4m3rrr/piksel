@@ -34,6 +34,7 @@ add_library(${PROJECT_NAME} STATIC
     src/tinygltf_impl.cc
     src/liner.cc
     src/object.cc
+    src/vehicle_model.cc
 )
 
 target_include_directories(${PROJECT_NAME}

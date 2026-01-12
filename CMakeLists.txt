@@ -33,6 +33,7 @@ add_library(${PROJECT_NAME} STATIC
     src/wireframe.cc
     src/tinygltf_impl.cc
     src/liner.cc
+    src/object.cc
 )
 
 target_include_directories(${PROJECT_NAME}

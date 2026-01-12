@@ -12,16 +12,14 @@ namespace piksel
   public:
     virtual void draw(Shader& shader) const=0;
     glm::mat4 getTransform() const { return translate*rotate*scale;}
+    void setTransform(const glm::mat4& transform);
   public:
     glm::mat4 translate;
     glm::mat4 rotate;
     glm::mat4 scale;
     Color color;
   protected:
-    Object()
-      :translate(1.f),rotate(1.f),scale(1.f),color(Color::White)
-    {
-    }
+    Object();
     virtual ~Object() noexcept=default;
   };
 }

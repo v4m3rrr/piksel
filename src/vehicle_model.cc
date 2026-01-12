@@ -28,8 +28,7 @@ namespace piksel
     shader.use();
     for(const auto& [_,mesh]:wheel_meshes_)
     {
-      glm::mat4 mesh_transform=mesh.getTransform();
-      glm::mat4 transform=this->getTransform()*mesh_transform;
+      glm::mat4 transform=mesh.getTransform();
       glUniformMatrix4fv(
           glGetUniformLocation(shader.get(),"trans"),
           1,GL_FALSE,glm::value_ptr(transform));
@@ -40,6 +39,14 @@ namespace piksel
       glLineWidth(1.f);
       mesh.draw(shader);
     }
+    glm::mat4 transform=chassis_mesh_.getTransform();
+    glUniformMatrix4fv(
+        glGetUniformLocation(shader.get(),"trans"),
+        1,GL_FALSE,glm::value_ptr(transform));
+    glUniform3f(
+        glGetUniformLocation(shader.get(),"color"),
+        color.r(),color.g(),color.b());
+    chassis_mesh_.draw(shader);
   }
 
   void VehicleModel::setWheelWorldTransform(

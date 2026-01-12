@@ -39,7 +39,7 @@ namespace piksel
       glLineWidth(1.f);
       mesh.draw(shader);
     }
-    glm::mat4 transform=chassis_mesh_.getTransform();
+    glm::mat4 transform=this->getTransform();
     glUniformMatrix4fv(
         glGetUniformLocation(shader.get(),"trans"),
         1,GL_FALSE,glm::value_ptr(transform));

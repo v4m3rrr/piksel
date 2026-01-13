@@ -10,6 +10,11 @@
 
 namespace piksel
 {
+  void Model::addObject(Object&& object)
+  {
+    objects_.push_back(std::move(object));
+  }
+  
   std::vector<Object>& Model::getObjects()
   {
     return objects_;

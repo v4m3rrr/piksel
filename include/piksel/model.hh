@@ -10,11 +10,12 @@ namespace piksel
   class Model:public IDrawable
   {
   public:
-    Model();
+    Model()=default;
     virtual ~Model() noexcept=default;
 
     virtual void draw(Shader& shader) const override;
     std::vector<Object>& getObjects();
+    void addObject(Object&& object);
   protected:
     std::vector<Object> objects_;
   };

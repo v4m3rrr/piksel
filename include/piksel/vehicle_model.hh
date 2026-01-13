@@ -30,6 +30,12 @@ namespace piksel
 
     virtual void draw(Shader& shader) const override;
 
-    void setWheelWorldTransform(WheelPosition wheel,const glm::mat4 transform);
+    const glm::mat4& getWheelWorldTransform(WheelPosition wheel) const;
+    const glm::mat4& getChassisWorldTransform() const;
+
+    void setWheelWorldTransform(WheelPosition wheel,const glm::mat4& transform);
+    void setChassisWorldTransform(const glm::mat4& transform);
+
+    void moveVehicleBy(const glm::mat4& transform);
   };
 }

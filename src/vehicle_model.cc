@@ -27,11 +27,43 @@ namespace piksel
     Model::draw(shader);
   }
 
+  const glm::mat4& VehicleModel::getWheelWorldTransform(
+      WheelPosition wheel) const
+  {
+    return this->objects_.at(int(wheel)).getTransform();
+  }
+
+  const glm::mat4& VehicleModel::getChassisWorldTransform() const
+  {
+    return this->objects_.at((int)(WheelPosition::Count)).getTransform();
+  }
+
   void VehicleModel::setWheelWorldTransform(
-      WheelPosition wheel,const glm::mat4 transform)
+      WheelPosition wheel,const glm::mat4& transform)
   {
     // Assumes that order on creation match order
     // of WheelPosition
     this->objects_[(int)wheel].setTransform(transform);
+  }
+
+  void VehicleModel::setChassisWorldTransform(const glm::mat4& transform)
+  {
+    this->objects_[(int)WheelPosition::Count].setTransform(transform);
+  }
+
+  void VehicleModel::moveVehicleBy(const glm::mat4& transform)
+  {
+    for(uint16_t i=0;i<(uint16_t)WheelPosition::Count;i++)
+    {
+      WheelPosition wheel=(WheelPosition)i;
+      auto wheel_transform=getWheelWorldTransform(wheel);
+      wheel_transform=transform*wheel_transform;
+
+      setWheelWorldTransform(wheel,wheel_transform);
+    }
+
+    auto chassis_transform=getChassisWorldTransform();
+    chassis_transform=transform*chassis_transform;
+    setChassisWorldTransform(chassis_transform);
   }
 }

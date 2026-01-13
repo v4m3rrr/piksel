@@ -22,11 +22,6 @@ namespace piksel
         std::shared_ptr<const Mesh> front_left_mesh,
         std::shared_ptr<const Mesh> front_right_mesh,
         std::shared_ptr<const Mesh> chassis_mesh);
-    VehicleModel(const VehicleModel&)=delete;
-    VehicleModel(VehicleModel&&) noexcept=default;
-
-    VehicleModel& operator=(const VehicleModel&)=delete;
-    VehicleModel& operator=(VehicleModel&&)=delete;
 
     virtual void draw(Shader& shader) const override;
 

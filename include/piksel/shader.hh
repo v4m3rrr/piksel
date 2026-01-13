@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/mat4x4.hpp>
 
 #include <string>
 
@@ -41,6 +42,8 @@ namespace piksel
 
     void use();
     void set(std::string_view name,int value);
+    void set(std::string_view name, const glm::vec3& vec);
+    void set(std::string_view name,const glm::mat4& matrix);
 
     ~Shader() noexcept;
   private:

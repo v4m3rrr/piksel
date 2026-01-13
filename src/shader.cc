@@ -1,5 +1,7 @@
 #include "piksel/shader.hh"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <fstream>
 #include <ios>
 #include <stdexcept>
@@ -58,6 +60,20 @@ namespace piksel
   void Shader::set(std::string_view name, int value)
   {
     glUniform1i(glGetUniformLocation(get(),name.data()),value);
+  }
+
+  void Shader::set(std::string_view name, const glm::mat4& value)
+  {
+    glUniformMatrix4fv(
+        glGetUniformLocation(get(),name.data()),
+        1,GL_FALSE,glm::value_ptr(value));
+  }
+
+  void Shader::set(std::string_view name, const glm::vec3& vec)
+  {
+    glUniform3f(
+        glGetUniformLocation(get(),name.data()),
+        vec.x,vec.y,vec.z);
   }
 
   std::string Shader::loadShaderSrc(const char* src_path) const

@@ -4,8 +4,8 @@
 #include "piksel/window.hh"
 #include "piksel/color.hh"
 #include "piksel/shader.hh"
+#include "piksel/IDrawable.hh"
 #include "piksel/camera.hh"
-#include "piksel/object.hh"
 #include "piksel/line.hh"
 #include "piksel/liner.hh"
 
@@ -21,7 +21,7 @@ namespace piksel
     Graphics(
         Window& wnd,const Camera& cam, 
         std::string_view vertex_shader, std::string_view fragement_shader);
-    void addObject(std::shared_ptr<const Object> object);
+    void addDrawable(std::shared_ptr<const IDrawable> object);
     void render();
     void setBackground(const Color& color);
     void drawLine(const Line& line);
@@ -37,7 +37,7 @@ namespace piksel
     Shader shader_;
     Liner liner_;
 
-    std::vector<std::shared_ptr<const Object>> objects_;
+    std::vector<std::shared_ptr<const IDrawable>> drawables_;
     const Camera& cam_;
     glm::mat4 project_;
 

@@ -1,30 +1,38 @@
 #include "piksel/object.hh"
 
+#include "piksel/color.hh"
+
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace piksel
 {
-    void Object::setTransform(const glm::mat4& transform)
-    {
-      glm::vec3 scale;
-      scale.x=glm::length(transform[0]);
-      scale.y=glm::length(transform[1]);
-      scale.z=glm::length(transform[2]);
+  Object::Object(
+        std::shared_ptr<const Mesh> mesh,
+        const glm::mat4& transform,
+        const Color& color)
+    :
+      mesh_(mesh),
+      transform_(transform),
+      color_(color)
+  {
+  }
 
-      this->scale=glm::scale(glm::mat4(1.f),scale);
+  void Object::draw(Shader& shader) const
+  {
+    shader.use();
+    shader.set("trans",transform_);
+    shader.set("color",color_.rgb());
 
-      this->rotate=glm::mat4(1.f);
-      this->rotate[0]=transform[0]/scale.x;
-      this->rotate[1]=transform[1]/scale.y;
-      this->rotate[2]=transform[2]/scale.z;
+    glLineWidth(1.f);
 
-      this->translate=glm::translate(glm::mat4(1.f),glm::vec3(transform[3]));
+    mesh_->bind();
+    glDrawElements(
+        GL_LINES,mesh_->getIndices().size(),GL_UNSIGNED_INT,0);
+    if(glGetError()!=GL_NO_ERROR){
+      throw std::runtime_error("failed to render object");
     }
-
-    Object::Object()
-      :translate(1.f),rotate(1.f),scale(1.f),color(Color::White)
-    {
-    }
+    glBindVertexArray(0);
+  }
 }

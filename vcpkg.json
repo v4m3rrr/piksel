@@ -4,6 +4,6 @@
     "glm",
     "opengl",
     "glad",
-    "tinygltf"
+    "stb"
   ]
 }

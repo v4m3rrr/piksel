@@ -1,12 +1,10 @@
 #pragma once
 
-#include "piksel/mesh.hh"
-
-#include <unordered_map>
+#include "piksel/model.hh"
 
 namespace piksel
 {
-  class VehicleModel : public Object
+  class VehicleModel:public Model
   {
   public:
     enum class WheelPosition : unsigned short
@@ -19,11 +17,11 @@ namespace piksel
     };
   public:
     VehicleModel(
-        Mesh&& rear_left_mesh,
-        Mesh&& rear_right_mesh,
-        Mesh&& front_left_mesh,
-        Mesh&& front_right_mesh,
-        Mesh&& chassis_mesh);
+        std::shared_ptr<const Mesh> rear_left_mesh,
+        std::shared_ptr<const Mesh> rear_right_mesh,
+        std::shared_ptr<const Mesh> front_left_mesh,
+        std::shared_ptr<const Mesh> front_right_mesh,
+        std::shared_ptr<const Mesh> chassis_mesh);
     VehicleModel(const VehicleModel&)=delete;
     VehicleModel(VehicleModel&&) noexcept=default;
 
@@ -33,8 +31,5 @@ namespace piksel
     virtual void draw(Shader& shader) const override;
 
     void setWheelWorldTransform(WheelPosition wheel,const glm::mat4 transform);
-  private:
-    std::unordered_map<WheelPosition,Mesh> wheel_meshes_;
-    Mesh chassis_mesh_;
   };
 }

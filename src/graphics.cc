@@ -1,4 +1,5 @@
 #include "piksel/graphics.hh"
+#include "piksel/IDrawable.hh"
 #include "piksel/glad_initializer.hh"
 
 
@@ -39,9 +40,9 @@ namespace piksel
         1,GL_FALSE,glm::value_ptr(project_));
   }
 
-  void Graphics::addObject(std::shared_ptr<const Object> object)
+  void Graphics::addDrawable(std::shared_ptr<const IDrawable> drawable)
   {
-    objects_.emplace_back(object);
+    drawables_.emplace_back(drawable);
   }
 
   void Graphics::render()
@@ -53,9 +54,9 @@ namespace piksel
       glGetUniformLocation(shader_.get(),"view"),
       1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
 
-    for(auto p_obj :objects_)
+    for(auto drawable :drawables_)
     {
-      p_obj->draw(shader_);
+      drawable->draw(shader_);
     }
 
     liner_.draw(project_*cam_.getCameraView());

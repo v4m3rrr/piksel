@@ -26,12 +26,10 @@ add_library(${PROJECT_NAME} STATIC
     src/image.cc
     src/texture.cc
     src/camera.cc
-    src/cube.cc
     src/mesh.cc
     src/color.cc
     src/model.cc
     src/wireframe.cc
-    src/tinygltf_impl.cc
     src/liner.cc
     src/object.cc
     src/vehicle_model.cc
@@ -60,13 +58,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
 find_package(glad CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE glad::glad)
 
-# --- tinygltf ---
-find_path(TINYGLTF_INCLUDE_DIRS "tiny_gltf.h")
-target_include_directories(${PROJECT_NAME} PRIVATE ${TINYGLTF_INCLUDE_DIRS}) 
-
-# --- bullet3 ---
-#find_package(Bullet CONFIG REQUIRED)
-#target_link_libraries(piksel PUBLIC ${BULLET_LIBRARIES})
+# --- stb ---
+find_package(Stb REQUIRED)
+target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
 
 if(MSVC)
 
@@ -87,14 +81,6 @@ if (BUILD_TESTS)
 include(CTest)
 
 set(TEST_SOURCES
-  #opengl_test
-  #chuj_test
-  #mem_test
-  model_load_test
-  #vehicle_test
-  line_test
-  #colider_test
-  #tinygltf_test
 )
 
 foreach(name IN LISTS TEST_SOURCES)

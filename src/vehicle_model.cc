@@ -6,56 +6,32 @@
 namespace piksel
 {
   VehicleModel::VehicleModel(
-      Mesh&& rear_left_mesh,
-      Mesh&& rear_right_mesh,
-      Mesh&& front_left_mesh,
-      Mesh&& front_right_mesh,
-      Mesh&& chassis_mesh)
-    :chassis_mesh_(std::move(chassis_mesh))
+      std::shared_ptr<const Mesh> rear_left_mesh,
+      std::shared_ptr<const Mesh> rear_right_mesh,
+      std::shared_ptr<const Mesh> front_left_mesh,
+      std::shared_ptr<const Mesh> front_right_mesh,
+      std::shared_ptr<const Mesh> chassis_mesh)
   {
-    wheel_meshes_.insert(
-        {WheelPosition::RearLeft,std::move(rear_left_mesh)});
-    wheel_meshes_.insert(
-        {WheelPosition::RearRight,std::move(rear_right_mesh)});
-    wheel_meshes_.insert(
-        {WheelPosition::FrontLeft,std::move(front_left_mesh)});
-    wheel_meshes_.insert(
-        {WheelPosition::FrontRight,std::move(front_right_mesh)});
+    // Order matters must math with WheelPostion enum
+    this->objects_.push_back(rear_left_mesh);
+    this->objects_.push_back(rear_right_mesh);
+    this->objects_.push_back(front_left_mesh);
+    this->objects_.push_back(front_right_mesh);
+
+    // Last element is always chassis.
+    this->objects_.push_back(chassis_mesh);
   }
 
   void VehicleModel::draw(Shader& shader) const
   {
-    shader.use();
-    for(const auto& [_,mesh]:wheel_meshes_)
-    {
-      glm::mat4 transform=mesh.getTransform();
-      glUniformMatrix4fv(
-          glGetUniformLocation(shader.get(),"trans"),
-          1,GL_FALSE,glm::value_ptr(transform));
-      glUniform3f(
-          glGetUniformLocation(shader.get(),"color"),
-          color.r(),color.g(),color.b());
-
-      glLineWidth(1.f);
-      mesh.draw(shader);
-    }
-    glm::mat4 transform=this->getTransform();
-    glUniformMatrix4fv(
-        glGetUniformLocation(shader.get(),"trans"),
-        1,GL_FALSE,glm::value_ptr(transform));
-    glUniform3f(
-        glGetUniformLocation(shader.get(),"color"),
-        color.r(),color.g(),color.b());
-    chassis_mesh_.draw(shader);
+    Model::draw(shader);
   }
 
   void VehicleModel::setWheelWorldTransform(
       WheelPosition wheel,const glm::mat4 transform)
   {
-    auto it = wheel_meshes_.find(wheel);
-    if (it != wheel_meshes_.end())
-    {
-        it->second.setTransform(transform);
-    }
+    // Assumes that order on creation match order
+    // of WheelPosition
+    this->objects_[(int)wheel].setTransform(transform);
   }
 }

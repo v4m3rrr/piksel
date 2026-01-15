@@ -49,6 +49,11 @@ namespace piksel
     vertices_.emplace_back(line.to,line.color);
   }
 
+  void Liner::clear()
+  {
+    vertices_.clear();
+  }
+
   void Liner::draw(const glm::mat4& proj_and_view)
   {
     shader_.use();
@@ -76,7 +81,5 @@ namespace piksel
       throw std::runtime_error("failed to set viewport");
     }
     glBindVertexArray(0);
-
-    vertices_.clear();
   }
 }

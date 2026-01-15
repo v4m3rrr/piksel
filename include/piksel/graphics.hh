@@ -25,6 +25,7 @@ namespace piksel
     void render();
     void setBackground(const Color& color);
     void drawLine(const Line& line);
+    void clear();
   private:
     void clear(const Color& color);
   private:

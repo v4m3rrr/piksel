@@ -26,6 +26,7 @@ namespace piksel
         std::string_view shader_path_frag=FRAG_SHADER_PATH);
     void addLine(const Line& line);
 
+    void clear();
     void draw(const glm::mat4& proj_and_view);
   private:
     static constexpr std::string_view VERTEX_SHADER_PATH=

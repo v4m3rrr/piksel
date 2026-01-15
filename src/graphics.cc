@@ -45,10 +45,13 @@ namespace piksel
     drawables_.emplace_back(drawable);
   }
 
-  void Graphics::render()
+  void Graphics::clear()
   {
     clear(background_);
+  }
 
+  void Graphics::render()
+  {
     shader_.use();
     glUniformMatrix4fv(
       glGetUniformLocation(shader_.get(),"view"),
@@ -82,5 +85,7 @@ namespace piksel
     if(glGetError()!=GL_NO_ERROR){
       throw std::runtime_error("failed to set viewport");
     }
+    
+    liner_.clear();
   }
 }

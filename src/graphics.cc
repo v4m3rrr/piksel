@@ -1,7 +1,5 @@
 #include "piksel/graphics.hh"
 #include "piksel/IDrawable.hh"
-#include "piksel/glad_initializer.hh"
-
 
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>

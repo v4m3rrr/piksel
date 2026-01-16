@@ -22,10 +22,10 @@ namespace piksel
         Window& wnd,const Camera& cam, 
         std::string_view vertex_shader, std::string_view fragement_shader);
     void addDrawable(std::shared_ptr<const IDrawable> object);
-    void render();
     void setBackground(const Color& color);
     void drawLine(const Line& line);
-    void clear();
+    void render();
+    void clearLines();
   private:
     void clear(const Color& color);
   private:

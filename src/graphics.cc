@@ -14,13 +14,20 @@ namespace piksel
   Graphics::Graphics(
         Window& wnd,const Camera& cam, 
         std::string_view vertex_shader, std::string_view fragement_shader)
+    :
+      Graphics(wnd,cam,Shader(vertex_shader,fragement_shader))
+  {
+  }
+
+  Graphics::Graphics(
+      Window& wnd,const Camera& cam,
+      Shader&& shader)
     :wnd_(wnd),
     width_(wnd_.width_),height_(wnd_.height_),
-    shader_(vertex_shader,fragement_shader),
+    shader_(std::move(shader)),
     cam_(cam),
     background_(Color::Black)
   {
-    
     // first two params sets postion of lower left corner
     glViewport(0,0,width_,height_);
     if(glGetError()!=GL_NO_ERROR){

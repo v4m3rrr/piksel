@@ -12,23 +12,26 @@ namespace piksel
 {
   Shader::Shader(
     std::string_view vertex_shader_src_path, 
-    std::string_view fragment_shader_src_path
-  )
+    std::string_view fragment_shader_src_path)
+    :
+      Shader(
+          CompileShader(loadShaderSrc(
+              vertex_shader_src_path.data()),ShaderType::VertexType),
+          CompileShader(loadShaderSrc(
+              fragment_shader_src_path.data()),ShaderType::FragmentType))
   {
-    std::string src=loadShaderSrc(vertex_shader_src_path.data());
-    CompileShader vertex_sh(src,ShaderType::VertexType);
+  }
 
-    src=loadShaderSrc(fragment_shader_src_path.data());
-    CompileShader frag_sh(src,ShaderType::FragmentType);
-
+  Shader::Shader(CompileShader vertex_shader, CompileShader fragment_shader)
+  {
     program_=glCreateProgram();
-    glAttachShader(program_,vertex_sh.get());
-    glAttachShader(program_,frag_sh.get());
+    glAttachShader(program_,vertex_shader.get());
+    glAttachShader(program_,fragment_shader.get());
 
     glLinkProgram(program_);
 
-    glDetachShader(program_,vertex_sh.get());
-    glDetachShader(program_,frag_sh.get());
+    glDetachShader(program_,vertex_shader.get());
+    glDetachShader(program_,fragment_shader.get());
 
     glValidateProgram(program_);
 
@@ -45,6 +48,28 @@ namespace piksel
       std::cerr<<"Failed validate shader:\n"<<info_log<<std::endl;
       throw std::runtime_error("Failed failed validate shader");
     }
+  }
+
+  Shader::Shader(Shader&& other)
+    :
+      program_(other.program_)
+  {
+    other.program_=0;
+  }
+
+  Shader& Shader::operator=(Shader&& other)
+  {
+    program_=other.program_;
+
+    other.program_=0;
+
+    return *this;
+  }
+
+  Shader::~Shader() noexcept
+  {
+    if(program_!=0)
+      glDeleteProgram(program_);
   }
 
   GLuint Shader::get() noexcept
@@ -76,9 +101,11 @@ namespace piksel
         vec.x,vec.y,vec.z);
   }
 
-  std::string Shader::loadShaderSrc(const char* src_path) const
+  std::string Shader::loadShaderSrc(const char* src_path)
   {
-    std::ifstream fin(src_path,std::ios_base::in|std::ios_base::ate | std::ios_base::binary);
+    std::ifstream fin(
+        src_path,
+        std::ios_base::in|std::ios_base::ate | std::ios_base::binary);
     if(!fin)
     {
       throw std::runtime_error("Failed to open shader source file");
@@ -91,12 +118,6 @@ namespace piksel
       throw std::runtime_error("Failed to read shader source file");
 
     return source;
-  }
-
-  Shader::~Shader() noexcept
-  {
-    if(program_!=0)
-      glDeleteProgram(program_);
   }
 
   Shader::CompileShader::CompileShader(std::string_view src, ShaderType type)

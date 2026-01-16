@@ -1,4 +1,5 @@
-.*
+*.swp
 !.gitignore
 !.gitkeep
 build
+.ycm_extra_conf.py

@@ -21,6 +21,9 @@ namespace piksel
     Graphics(
         Window& wnd,const Camera& cam, 
         std::string_view vertex_shader, std::string_view fragement_shader);
+    Graphics(
+        Window& wnd,const Camera& cam,
+        Shader&& shader);
     void addDrawable(std::shared_ptr<const IDrawable> object);
     void setBackground(const Color& color);
     void drawLine(const Line& line);

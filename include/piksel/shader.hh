@@ -9,7 +9,7 @@ namespace piksel
 {
   class Shader
   {
-  private:
+  public:
     enum class ShaderType : GLuint
     {
       VertexType=GL_VERTEX_SHADER,
@@ -24,12 +24,12 @@ namespace piksel
       CompileShader(const CompileShader&)=delete;
       CompileShader& operator=(const CompileShader&)=delete;
 
-      GLuint get() noexcept;
-
       CompileShader(CompileShader&& other)noexcept=delete;
       CompileShader& operator=(CompileShader&& other) noexcept=delete;
 
       ~CompileShader() noexcept;
+
+      GLuint get() noexcept;
     private:
       GLuint shader_=0;
     };
@@ -37,6 +37,16 @@ namespace piksel
     Shader(
       std::string_view vertex_shader_src_path, 
       std::string_view fragment_shader_src_path);
+    Shader(
+        CompileShader vertex_shader,
+        CompileShader fragment_shader);
+    Shader(const Shader&)=delete;
+    Shader(Shader&& other);
+
+    Shader& operator=(const Shader&)=delete;
+    Shader& operator=(Shader&&);
+
+    ~Shader() noexcept;
 
     GLuint get() noexcept;
 
@@ -44,10 +54,8 @@ namespace piksel
     void set(std::string_view name,int value);
     void set(std::string_view name, const glm::vec3& vec);
     void set(std::string_view name,const glm::mat4& matrix);
-
-    ~Shader() noexcept;
-  private:
-    std::string loadShaderSrc(const char* src_path) const;
+  public:
+    static std::string loadShaderSrc(const char* src_path);
   private:
     GLuint program_=0;
   };

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "piksel/glad_initializer.hh"
 #include "piksel/window.hh"
 #include "piksel/color.hh"
 #include "piksel/shader.hh"
@@ -33,7 +32,6 @@ namespace piksel
     void clear(const Color& color);
   private:
     Window& wnd_;
-    GladInitializer glad_init_;
     
     const uint32_t width_;
     const uint32_t height_;

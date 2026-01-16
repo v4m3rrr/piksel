@@ -32,6 +32,11 @@ namespace piksel
     //  throw std::runtime_error("Unsupported raw mouse motion");
     //}
     glfwSetInputMode(p_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);   
+
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+      throw std::runtime_error("failed to init GLAD");
+    }
   }
 
   Window::KeyState Window::getKey(int glfw_code) const

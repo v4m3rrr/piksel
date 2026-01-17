@@ -13,7 +13,7 @@ It provides a minimalist, clean interface for rendering, math operations, and wi
 ## Requirements
 
 - C++20 or newer  
-- OpenGL 3.3+  
+- OpenGL  
 - [GLFW](https://www.glfw.org/)  
 - [GLM](https://github.com/g-truc/glm)
 - [stb](https://github.com/nothings/stb)

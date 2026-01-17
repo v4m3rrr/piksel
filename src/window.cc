@@ -58,6 +58,14 @@ namespace piksel
     return {x,y};
   }
 
+  void Window::setCursor(bool enable)
+  {
+    if(enable)
+      glfwSetInputMode(p_window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);   
+    else
+      glfwSetInputMode(p_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);   
+  }
+
   void Window::update()
   {
     glfwSwapBuffers(p_window_);

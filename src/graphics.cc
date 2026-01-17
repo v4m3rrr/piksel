@@ -57,7 +57,6 @@ namespace piksel
 
   void Graphics::render()
   {
-    clear(background_);
     shader_.use();
     glUniformMatrix4fv(
       glGetUniformLocation(shader_.get(),"view"),
@@ -81,9 +80,9 @@ namespace piksel
     background_=color;
   }
 
-  void Graphics::clear(const Color& color)
+  void Graphics::clear()
   {
-    glClearColor(color.c.x,color.c.y,color.c.z,color.c.w);
+    glClearColor(background_.c.x,background_.c.y,background_.c.z,background_.c.w);
     if(glGetError()!=GL_NO_ERROR){
       throw std::runtime_error("failed to set viewport");
     }

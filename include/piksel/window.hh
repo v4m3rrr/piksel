@@ -29,6 +29,9 @@ namespace piksel
     Window& operator=(const Window&)=delete;
     KeyState getKey(int glfw_code) const;
     MousePos getMousePos() const;
+    void setCursor(bool enable=true);
+
+    GLFWwindow* getGLFWPointer() {return p_window_;}
 
     void update();
     void close();

@@ -1,0 +1,74 @@
+#include "piksel/gui_manager.hh"
+
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+
+namespace piksel
+{
+  GuiManager::GuiManager(GLFWwindow* p_window)
+  {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.IniFilename = NULL;
+    io.LogFilename = NULL;
+
+    ImGui::StyleColorsDark();
+
+    io.Fonts->Clear();
+    io.Fonts->AddFontDefault();
+
+    io.FontGlobalScale = 1.0f;
+    io.Fonts->Build();
+
+    const char* glsl_version = "#version 130";
+    ImGui_ImplGlfw_InitForOpenGL(p_window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+  }
+
+  GuiManager::~GuiManager() noexcept
+  {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+  }
+
+  void GuiManager::render()
+  {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
+    for(auto object : objects_)
+    {
+      if(ignore_input_)
+        ImGui::Begin(
+            object->getTitle().data(),
+            nullptr,
+            ImGuiWindowFlags_NoInputs | 
+            ImGuiWindowFlags_NoMove | 
+            ImGuiWindowFlags_NoResize);
+      else
+        ImGui::Begin(
+            object->getTitle().data(),
+            nullptr);
+
+      object->draw();
+      ImGui::End();
+    }
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  }
+  
+  void GuiManager::ignoreInput(bool enable)
+  {
+    ignore_input_=enable;
+  }
+
+  void GuiManager::addObject(std::shared_ptr<GuiObject> object)
+  {
+    objects_.push_back(object);
+  }
+}

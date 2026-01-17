@@ -12,6 +12,7 @@
 #include <memory>
 #include <string_view>
 
+                        
 namespace piksel
 {
   class Graphics
@@ -23,13 +24,13 @@ namespace piksel
     Graphics(
         Window& wnd,const Camera& cam,
         Shader&& shader);
+
     void addDrawable(std::shared_ptr<const IDrawable> object);
     void setBackground(const Color& color);
     void drawLine(const Line& line);
     void render();
     void clearLines();
-  private:
-    void clear(const Color& color);
+    void clear();
   private:
     Window& wnd_;
     

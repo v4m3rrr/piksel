@@ -12,13 +12,16 @@ namespace piksel
     glfwInit();
 #ifdef RASPBERRY_PI
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-#endif
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,0);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    
+#else
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     // Tells that we only use core features
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
 
     p_window_=glfwCreateWindow(width_,height_,title_,NULL,NULL);
     if(p_window_==NULL)

@@ -4,6 +4,13 @@
     "glm",
     "opengl",
     "glad",
-    "stb"
+    "stb",
+    {
+      "name": "imgui",
+      "features": [
+        "opengl3-binding",
+        "glfw-binding"
+      ]
+    }
   ]
 }

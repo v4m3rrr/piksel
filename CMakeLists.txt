@@ -101,17 +101,17 @@ foreach(name IN LISTS TEST_SOURCES)
   if(MSVC)
 
   else()
-    #target_link_options(${name} PUBLIC -fsanitize=address,undefined,leak)
-    #target_compile_options( ${name} PUBLIC
-    #  -fsanitize=address,undefined,leak)
+    target_link_options(${name} PUBLIC -fsanitize=address,undefined,leak)
+    target_compile_options( ${name} PUBLIC
+      -fsanitize=address,undefined,leak)
   endif()
   target_link_libraries(${name} PRIVATE ${PROJECT_NAME})
   add_test(NAME ${name} COMMAND ${name})
   if(MSVC)
 
   else()
-    #set_tests_properties(${name} PROPERTIES
-    #  ENVIRONMENT "${LSAN_ENV_VAR}")
+    set_tests_properties(${name} PROPERTIES
+      ENVIRONMENT "${LSAN_ENV_VAR}")
   endif()
 endforeach()
 

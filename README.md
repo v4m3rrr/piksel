@@ -16,5 +16,6 @@ It provides a minimalist, clean interface for rendering, math operations, and wi
 - OpenGL 3.3+  
 - [GLFW](https://www.glfw.org/)  
 - [GLM](https://github.com/g-truc/glm)
-- [tinygltf](https://github.com/syoyo/tinygltf)
+- [stb](https://github.com/nothings/stb)
 - [glad](https://github.com/Dav1dde/glad)
+- [imgui](https://github.com/ocornut/imgui)

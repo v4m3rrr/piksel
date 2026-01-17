@@ -13,7 +13,6 @@ find_dependency(glfw3 CONFIG)
 find_dependency(OpenGL)
 find_dependency(glm CONFIG)
 find_dependency(glad CONFIG)
-find_dependency(stb CONFIG)
 find_dependency(imgui CONFIG)
 
 # 3. Include the targets file

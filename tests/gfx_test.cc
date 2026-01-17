@@ -4,12 +4,20 @@
 #include <GLFW/glfw3.h>
 #include <glm/ext/vector_float3.hpp>
 
+#ifdef RASPBERRY_PI
+const char* vertex_sh_path=PIKSEL_SHADERS_PATH"/single_color_es.vert";
+const char* frag_sh_path=PIKSEL_SHADERS_PATH"/single_color_es.frag";
+#else
+const char* vertex_sh_path=PIKSEL_SHADERS_PATH"/single_color.vert";
+const char* frag_sh_path=PIKSEL_SHADERS_PATH"/single_color.frag";
+#endif
+
 using namespace piksel;
-Window wnd("chuj",1280,720);
+Window wnd("window",1280,720);
 Camera cam({0.f,0.f,5.f},{0.f,0.f,0.f});
 Graphics gfx(wnd,cam,
-    PIKSEL_SHADERS_PATH"/single_color.vert",
-    PIKSEL_SHADERS_PATH"/single_color.frag");
+    vertex_sh_path,
+    frag_sh_path);
 GuiManager gui_manager(wnd.getGLFWPointer());
 
 class InfoPanel : public GuiObject
@@ -18,8 +26,8 @@ public:
   ~InfoPanel() noexcept override=default;
   void draw() override
   {
-    GuiObject::text("Chuj dupa cycki michal wierzbicki");
-    GuiObject::checkBox("Wyruchac ci cipe",&czyWyruchac);
+    GuiObject::text("Jakis tekst");
+    GuiObject::checkBox("Checkbox cos tam",&czy);
   } 
   std::string_view getTitle() const override
   {
@@ -27,7 +35,7 @@ public:
   }
 private:
     std::string title="Inforamtion of your mother";
-    bool czyWyruchac=false;
+    bool czy=false;
 };
 
 void drawLine(
@@ -43,7 +51,6 @@ int main()
   float cam_speed=5.f;
   gfx.setBackground(Color::Black);
 
-  glLineWidth(5.f);
   float prev=glfwGetTime();
   while(wnd)
   {
@@ -87,7 +94,6 @@ int main()
     }
     prev_mouse_pos.x=mouse_pos.x;
     prev_mouse_pos.y=mouse_pos.y;
-
 
     drawLine(
         {0.f,0.f,0.f},

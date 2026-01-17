@@ -1,7 +1,8 @@
 #include "piksel/gui_manager.hh"
 
-#include "imgui.h"
 #include "imgui_impl_opengl3.h"
+
+#include <GLFW/glfw3.h>
 
 namespace piksel
 {
@@ -21,7 +22,11 @@ namespace piksel
     io.FontGlobalScale = 1.0f;
     io.Fonts->Build();
 
+#ifdef RASPBERRY_PI
+    const char* glsl_version = "#version 300 es";
+#else
     const char* glsl_version = "#version 130";
+#endif
     ImGui_ImplGlfw_InitForOpenGL(p_window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
   }
@@ -38,7 +43,6 @@ namespace piksel
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-
 
     for(auto object : objects_)
     {

@@ -2,6 +2,7 @@
 
 #include "piksel/gui_object.hh"
 
+#include "imgui.h"
 #include "imgui_impl_glfw.h"
 
 #include <memory>

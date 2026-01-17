@@ -34,7 +34,7 @@ namespace piksel
 
     glEnable(GL_DEPTH_TEST);
     if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to enable depth test");
     }
 
     shader_.use();
@@ -43,6 +43,9 @@ namespace piksel
     glUniformMatrix4fv(
         glGetUniformLocation(shader_.get(),"proj"),
         1,GL_FALSE,glm::value_ptr(project_));
+    if(glGetError()!=GL_NO_ERROR){
+      throw std::runtime_error("failed to set proj uniform");
+    }
   }
 
   void Graphics::addDrawable(std::shared_ptr<const IDrawable> drawable)
@@ -61,6 +64,9 @@ namespace piksel
     glUniformMatrix4fv(
       glGetUniformLocation(shader_.get(),"view"),
       1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
+    if(glGetError()!=GL_NO_ERROR){
+      throw std::runtime_error("failed to set view uniform");
+    }
 
     for(auto drawable :drawables_)
     {
@@ -84,11 +90,11 @@ namespace piksel
   {
     glClearColor(background_.c.x,background_.c.y,background_.c.z,background_.c.w);
     if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to clear color");
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set viewport");
+      throw std::runtime_error("failed to clear depth buffer");
     }
   }
 }

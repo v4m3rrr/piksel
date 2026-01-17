@@ -9,10 +9,10 @@
 namespace piksel
 {
   Liner::Liner(
-      float stroke, 
-      std::string_view shader_path_vert,
-      std::string_view Shader_path_frag)
-    :stroke_(stroke),shader_(shader_path_vert,Shader_path_frag)
+      float stroke)
+    :stroke_(stroke),shader_(
+      Shader::CompileShader(src_code_vertex_sh,Shader::ShaderType::VertexType),
+      Shader::CompileShader(src_code_frag_sh, Shader::ShaderType::FragmentType))
   {
     glGenVertexArrays(1,&vao_);
     glGenBuffers(1,&vbo_);
@@ -82,4 +82,11 @@ namespace piksel
     }
     glBindVertexArray(0);
   }
+#ifdef RASPBERRY_PI
+  std::string_view Liner::src_code_vertex_sh = "#version 310 es\n\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in vec3 aColor;\n\nout vec3 outColor;\n\nuniform mat4 proj_view;\nuniform mat4 trans;\n\nvoid main()\n{\n  outColor=aColor;\n  gl_Position = proj_view*trans*vec4(aPos.xyz, 1.0f);\n};\n";
+  std::string_view Liner::src_code_frag_sh = "#version 310 es\n\nprecision mediump float;\n\nin vec3 outColor;\n\nout vec4 FragColor;\n\nvoid main()\n{\n  FragColor=vec4(outColor.xyz,1.0);\n};\n";
+#else
+  std::string_view Liner::src_code_vertex_sh = "#version 330 core\n\nlayout (location = 0) in vec3 aPos;\nlayout (location = 1) in vec3 aColor;\n\nout vec3 outColor;\n\nuniform mat4 proj_view;\nuniform mat4 trans;\n\nvoid main()\n{\n  outColor=aColor;\n  gl_Position = proj_view*trans*vec4(aPos.xyz, 1.0f);\n};\n";
+  std::string_view Liner::src_code_frag_sh = "#version 330 core\n\nin vec3 outColor;\n\nout vec4 FragColor;\n\nvoid main()\n{\n  FragColor=vec4(outColor.xyz,1.0);\n};\n";
+#endif
 }

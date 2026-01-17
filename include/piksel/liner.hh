@@ -21,25 +21,14 @@ namespace piksel
     };
   public:
     Liner(
-        float stroke=1.f, 
-        std::string_view shader_path_vert=VERTEX_SHADER_PATH,
-        std::string_view shader_path_frag=FRAG_SHADER_PATH);
+      float stroke = 1.f);
     void addLine(const Line& line);
 
     void clear();
     void draw(const glm::mat4& proj_and_view);
   private:
-#ifdef RASPBERRY_PI
-    static constexpr std::string_view VERTEX_SHADER_PATH=
-      PIKSEL_SHADERS_PATH"/line_es.vert";
-    static constexpr std::string_view FRAG_SHADER_PATH=
-      PIKSEL_SHADERS_PATH"/line_es.frag";
-#else
-    static constexpr std::string_view VERTEX_SHADER_PATH=
-      PIKSEL_SHADERS_PATH"/line.vert";
-    static constexpr std::string_view FRAG_SHADER_PATH=
-      PIKSEL_SHADERS_PATH"/line.frag";
-#endif
+    static std::string_view src_code_vertex_sh;
+    static std::string_view src_code_frag_sh;
   private:
     float stroke_;
     GLuint vao_,vbo_;

@@ -10,8 +10,11 @@ namespace piksel
     :title_(title),width_(width),height_(height)
   {
     glfwInit();
+#ifdef RASPBERRY_PI
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+#endif
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,0);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     
     // Tells that we only use core features

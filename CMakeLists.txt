@@ -35,6 +35,11 @@ add_library(${PROJECT_NAME} STATIC
     src/vehicle_model.cc
 )
 
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+  message(STATUS "Assuming raspberry Pi detected")
+  target_compile_definitions(${PROJECT_NAME} PUBLIC -DRASPBERRY_PI)
+endif()
+
 target_include_directories(${PROJECT_NAME}
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

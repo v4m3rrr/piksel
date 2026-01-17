@@ -1,4 +1,6 @@
-#version 310 core
+#version 310 es
+
+precision mediump float;
 
 in vec2 ourTexCord;
 

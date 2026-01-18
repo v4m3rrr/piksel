@@ -33,9 +33,6 @@ namespace piksel
     void clear();
   private:
     Window& wnd_;
-    
-    const uint32_t width_;
-    const uint32_t height_;
 
     Shader shader_;
     Liner liner_;

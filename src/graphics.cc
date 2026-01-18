@@ -21,30 +21,13 @@ namespace piksel
       Window& wnd,const Camera& cam,
       Shader&& shader)
     :wnd_(wnd),
-    width_(wnd_.width_),height_(wnd_.height_),
     shader_(std::move(shader)),
     cam_(cam),
     background_(Color::Black)
   {
-    // first two params sets postion of lower left corner
-    glViewport(0,0,width_,height_);
-    if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set viewport");
-    }
-
     glEnable(GL_DEPTH_TEST);
     if(glGetError()!=GL_NO_ERROR){
       throw std::runtime_error("failed to enable depth test");
-    }
-
-    shader_.use();
-    project_=glm::perspective(
-        glm::radians(45.0f),(float)wnd_.width_/wnd_.height_,0.1f,1000.0f);
-    glUniformMatrix4fv(
-        glGetUniformLocation(shader_.get(),"proj"),
-        1,GL_FALSE,glm::value_ptr(project_));
-    if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set proj uniform");
     }
   }
 
@@ -60,7 +43,24 @@ namespace piksel
 
   void Graphics::render()
   {
+    // manage resizable window
+    // first two params sets postion of lower left corner
+    Window::WindowSize window_size=wnd_.getWindowSize();
+    glViewport(0,0,window_size.width,window_size.height);
+    if(glGetError()!=GL_NO_ERROR){
+      throw std::runtime_error("failed to set viewport");
+    }
+
     shader_.use();
+    project_=glm::perspective(
+        glm::radians(45.0f),(float)window_size.width/window_size.height,0.1f,1000.0f);
+    glUniformMatrix4fv(
+        glGetUniformLocation(shader_.get(),"proj"),
+        1,GL_FALSE,glm::value_ptr(project_));
+    if(glGetError()!=GL_NO_ERROR){
+      throw std::runtime_error("failed to set proj uniform");
+    }
+
     glUniformMatrix4fv(
       glGetUniformLocation(shader_.get(),"view"),
       1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));

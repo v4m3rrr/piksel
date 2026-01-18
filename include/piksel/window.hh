@@ -22,6 +22,11 @@ namespace piksel
       double x;
       double y;
     };
+    struct WindowSize
+    {
+      int width;
+      int height;
+    };
   public:
     Window(const char* title, uint32_t width, uint32_t height);
     Window(const Window&)=delete;
@@ -30,6 +35,7 @@ namespace piksel
     KeyState getKey(int glfw_code) const;
     MousePos getMousePos() const;
     void setCursor(bool enable=true);
+    WindowSize getWindowSize() const;
 
     GLFWwindow* getGLFWPointer() {return p_window_;}
 
@@ -41,9 +47,6 @@ namespace piksel
     ~Window();
   private:
     const char* title_;
-
-    const uint32_t width_;
-    const uint32_t height_;
 
     GLFWwindow* p_window_;
   };

@@ -19,7 +19,7 @@ namespace piksel
     ImGui::SliderFloat(label.data(),value,min,max);
   }
 
-  bool collapsingHeader(std::string_view label)
+  bool GuiObject::collapsingHeader(std::string_view label)
   {
     return ImGui::CollapsingHeader(label.data());
   }

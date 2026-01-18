@@ -1,5 +1,6 @@
 #include "piksel/gui_manager.hh"
 
+#include "imgui.h"
 #include "imgui_impl_opengl3.h"
 
 #include <GLFW/glfw3.h>
@@ -52,11 +53,13 @@ namespace piksel
             nullptr,
             ImGuiWindowFlags_NoInputs | 
             ImGuiWindowFlags_NoMove | 
-            ImGuiWindowFlags_NoResize);
+            ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_AlwaysAutoResize);
       else
         ImGui::Begin(
             object->getTitle().data(),
-            nullptr);
+            nullptr,
+            ImGuiWindowFlags_AlwaysAutoResize);
 
       object->draw();
       ImGui::End();

@@ -12,12 +12,18 @@ namespace piksel
 
   void Camera::moveBy(const glm::vec3& delta_pos)
   {
+    if(!enable_camera_)
+      return;
+
     cam_pos_+=delta_pos;
     target_pos_+=delta_pos;
   }
 
   void Camera::moveLongitudinal(float value)
   {
+    if(!enable_camera_)
+      return;
+
     glm::vec3 delta_pos=glm::normalize(target_pos_-cam_pos_);
     delta_pos*=value;
 
@@ -26,6 +32,9 @@ namespace piksel
 
   void Camera::moveLateral(float value)
   {
+    if(!enable_camera_)
+      return;
+
     glm::vec3 delta_pos=glm::cross(target_pos_-cam_pos_,up_);
     delta_pos=glm::normalize(delta_pos);
     delta_pos*=value;
@@ -34,6 +43,9 @@ namespace piksel
   }
 
   void Camera::rotateYaw(float radinas){
+    if(!enable_camera_)
+      return;
+
     glm::vec3 dir=target_pos_-cam_pos_;
     glm::mat4 rotate=glm::rotate(glm::mat4(1.f),radinas,up_);
 
@@ -43,6 +55,9 @@ namespace piksel
   }
 
   void Camera::rotatePitch(float radinas){
+    if(!enable_camera_)
+      return;
+
     static float angle=0;
     if(glm::abs(angle+radinas)>=glm::radians(89.f)){
       return;
@@ -61,5 +76,10 @@ namespace piksel
   glm::mat4 Camera::getCameraView() const
   {
     return glm::lookAt(cam_pos_,target_pos_,up_);
+  }
+
+  void Camera::enable(bool enable)
+  {
+    enable_camera_=enable;
   }
 }

@@ -14,9 +14,12 @@ namespace piksel
     void rotateYaw(float radians);
     void rotatePitch(float radians);
     glm::mat4 getCameraView() const;
+    void enable(bool enable=true);
   private:
     glm::vec3 cam_pos_;
     glm::vec3 target_pos_;
     glm::vec3 up_={0.f,1.f,0.f};
+
+    bool enable_camera_=true;
   };
 }

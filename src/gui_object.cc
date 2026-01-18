@@ -19,6 +19,11 @@ namespace piksel
     ImGui::SliderFloat(label.data(),value,min,max);
   }
 
+  bool collapsingHeader(std::string_view label)
+  {
+    return ImGui::CollapsingHeader(label.data());
+  }
+
   void GuiObject::color(std::string_view label, glm::vec3& color)
   {
     float values[3];

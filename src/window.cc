@@ -2,14 +2,25 @@
 
 #include <GLFW/glfw3.h>
 
-#include <stdexcept>
+#include "piksel/exception.hh"
 
 namespace piksel
 {
-  Window::Window(const char* title, uint32_t width, uint32_t height)
+  static constexpr Exception::Type kExceptionType=Exception::Type::WindowError;
+
+  Window::Window(const char* title)
+    :Window(title,{0,0})
+  {
+  }
+
+  Window::Window(const char* title, WindowSize size)
     :title_(title)
   {
     glfwInit();
+    if(glfwGetError(NULL)!=GLFW_NO_ERROR)
+    {
+      throw Exception(kExceptionType,"Failed to init glfw");
+    }
 #ifdef RASPBERRY_PI
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,0);
@@ -21,20 +32,40 @@ namespace piksel
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 
-    p_window_=glfwCreateWindow(width,height,title_,NULL,NULL);
-    if(p_window_==NULL)
+    if(size.height==0||size.width==0)
+    {
+      size=this->getMonitorSize();
+      size.height*=0.8;
+      size.width*=0.8;
+    }
+    p_window_=glfwCreateWindow(size.width,size.height,title_,NULL,NULL);
+    if(glfwGetError(NULL)!=GLFW_NO_ERROR)
     {
       glfwTerminate();
-      throw std::runtime_error("Failed to create window");
+      throw Exception(kExceptionType,"Failed to create window");
     }
 
     glfwMakeContextCurrent(p_window_);
+    if(glfwGetError(NULL)!=GLFW_NO_ERROR)
+    {
+      glfwDestroyWindow(p_window_);
+      glfwTerminate();
+      throw Exception(kExceptionType,"Failed to create window");
+    }
 
     glfwSetInputMode(p_window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);   
+    if(glfwGetError(NULL)!=GLFW_NO_ERROR)
+    {
+      glfwDestroyWindow(p_window_);
+      glfwTerminate();
+      throw Exception(kExceptionType,"Failed to create window");
+    }
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-      throw std::runtime_error("failed to init GLAD");
+      glfwDestroyWindow(p_window_);
+      glfwTerminate();
+      throw Exception(kExceptionType,"Failed to load glad");
     }
   }
 
@@ -64,6 +95,14 @@ namespace piksel
     WindowSize size;
     glfwGetFramebufferSize(p_window_,&size.width,&size.height);
     return size;
+  }
+
+  Window::WindowSize Window::getMonitorSize() const
+  {
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode=glfwGetVideoMode(monitor);
+
+    return {mode->width,mode->height};
   }
 
   void Window::update()

@@ -16,12 +16,26 @@ namespace piksel
     io.LogFilename = NULL;
 
     ImGui::StyleColorsDark();
+    float xscale, yscale;
+    glfwGetWindowContentScale(p_window, &xscale, &yscale);
 
     io.Fonts->Clear();
     io.Fonts->AddFontDefault();
 
-    io.FontGlobalScale = 1.0f;
+    io.FontGlobalScale = xscale;
     io.Fonts->Build();
+    ImGui::GetStyle().ScaleAllSizes(xscale);
+
+    // When window switches from one monitor to another
+    glfwSetWindowContentScaleCallback(
+        p_window,
+        [](GLFWwindow*, float xscale, float)
+        {
+            float dpiScale = xscale;
+            ImGui::GetStyle().ScaleAllSizes(dpiScale);
+            ImGui::GetIO().FontGlobalScale = dpiScale;
+        }
+    );
 
 #ifdef RASPBERRY_PI
     const char* glsl_version = "#version 300 es";

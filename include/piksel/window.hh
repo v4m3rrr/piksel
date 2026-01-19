@@ -3,8 +3,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <cstdint>
-
 namespace piksel
 {
   class Window
@@ -28,7 +26,8 @@ namespace piksel
       int height;
     };
   public:
-    Window(const char* title, uint32_t width, uint32_t height);
+    Window(const char* title);
+    Window(const char* title, WindowSize size);
     Window(const Window&)=delete;
     
     Window& operator=(const Window&)=delete;
@@ -36,6 +35,7 @@ namespace piksel
     MousePos getMousePos() const;
     void setCursor(bool enable=true);
     WindowSize getWindowSize() const;
+    WindowSize getMonitorSize() const;
 
     GLFWwindow* getGLFWPointer() {return p_window_;}
 

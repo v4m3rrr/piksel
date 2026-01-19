@@ -1,14 +1,16 @@
 #include "piksel/graphics.hh"
 #include "piksel/IDrawable.hh"
 
+#include "piksel/exception.hh"
+
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <memory>
-#include <stdexcept>
 
 namespace piksel
 {
+  static constexpr Exception::Type kExceptionType=Exception::Type::GraphicsError;
   Graphics::Graphics(
         Window& wnd,const Camera& cam, 
         std::string_view vertex_shader, std::string_view fragement_shader)
@@ -27,7 +29,7 @@ namespace piksel
   {
     glEnable(GL_DEPTH_TEST);
     if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to enable depth test");
+      throw Exception(kExceptionType,"Failed to enable depth test");
     }
   }
 
@@ -47,25 +49,23 @@ namespace piksel
     // first two params sets postion of lower left corner
     Window::WindowSize window_size=wnd_.getWindowSize();
     glViewport(0,0,window_size.width,window_size.height);
-    if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set viewport");
-    }
 
     shader_.use();
+
     project_=glm::perspective(
         glm::radians(45.0f),(float)window_size.width/window_size.height,0.1f,1000.0f);
     glUniformMatrix4fv(
         glGetUniformLocation(shader_.get(),"proj"),
         1,GL_FALSE,glm::value_ptr(project_));
     if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set proj uniform");
+      throw Exception(kExceptionType,"Failed to set project uniform");
     }
 
     glUniformMatrix4fv(
       glGetUniformLocation(shader_.get(),"view"),
       1,GL_FALSE,glm::value_ptr(cam_.getCameraView()));
     if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to set view uniform");
+      throw Exception(kExceptionType,"Failed to set view uniform");
     }
 
     for(auto drawable :drawables_)
@@ -88,13 +88,8 @@ namespace piksel
 
   void Graphics::clear()
   {
+    // Raerly throws
     glClearColor(background_.c.x,background_.c.y,background_.c.z,background_.c.w);
-    if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to clear color");
-    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if(glGetError()!=GL_NO_ERROR){
-      throw std::runtime_error("failed to clear depth buffer");
-    }
   }
 }

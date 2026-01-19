@@ -11,7 +11,6 @@
 #include <vector>
 #include <memory>
 #include <string_view>
-
                         
 namespace piksel
 {

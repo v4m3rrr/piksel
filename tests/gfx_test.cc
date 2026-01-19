@@ -13,7 +13,7 @@ const char* frag_sh_path=PIKSEL_SHADERS_PATH"/single_color.frag";
 #endif
 
 using namespace piksel;
-Window wnd("window",1280,720);
+Window wnd("window");
 Camera cam({0.f,0.f,5.f},{0.f,0.f,0.f});
 Graphics gfx(wnd,cam,
     vertex_sh_path,

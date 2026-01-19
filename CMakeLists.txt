@@ -35,6 +35,7 @@ add_library(${PROJECT_NAME} STATIC
     src/vehicle_model.cc
     src/gui_object.cc
     src/gui_manager.cc
+    src/exception.cc
 )
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")

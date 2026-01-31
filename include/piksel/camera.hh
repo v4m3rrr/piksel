@@ -8,6 +8,8 @@ namespace piksel
   {
   public:
     Camera(const glm::vec3& pos, const glm::vec3& target);
+
+    void set(const glm::vec3& target, const glm::vec3& pos);
     void moveBy(const glm::vec3& delta_pos);
     void moveLongitudinal(float value);
     void moveLateral(float value);

@@ -10,6 +10,12 @@ namespace piksel
     :cam_pos_(pos),target_pos_(target)
   {}
 
+  void Camera::set(const glm::vec3& target, const glm::vec3& pos)
+  {
+    cam_pos_=pos;
+    target_pos_=target;
+  }
+
   void Camera::moveBy(const glm::vec3& delta_pos)
   {
     if(!enable_camera_)

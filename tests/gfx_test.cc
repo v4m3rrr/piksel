@@ -28,6 +28,7 @@ public:
   {
     GuiObject::text("Jakis tekst");
     GuiObject::checkBox("Checkbox cos tam",&czy);
+    GuiObject::inputValue3("Chujniki",&values[0],&values[1],&values[2]);
   } 
   std::string_view getTitle() const override
   {
@@ -35,6 +36,7 @@ public:
   }
 private:
     std::string title="Inforamtion of your mother";
+    float values[3];
     bool czy=false;
 };
 

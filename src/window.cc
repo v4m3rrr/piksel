@@ -105,6 +105,11 @@ namespace piksel
     return {mode->width,mode->height};
   }
 
+  double Window::getTime() const
+  {
+    return glfwGetTime();
+  }
+
   void Window::update()
   {
     glfwSwapBuffers(p_window_);

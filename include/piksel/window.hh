@@ -36,6 +36,7 @@ namespace piksel
     void setCursor(bool enable=true);
     WindowSize getWindowSize() const;
     WindowSize getMonitorSize() const;
+    double getTime() const;
 
     GLFWwindow* getGLFWPointer() {return p_window_;}
 

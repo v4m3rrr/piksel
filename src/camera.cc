@@ -27,6 +27,8 @@ namespace piksel
 
   void Camera::moveLongitudinal(float value)
   {
+    value*=movement_speed_;
+
     glm::vec3 delta_pos=glm::normalize(target_pos_-cam_pos_);
     delta_pos*=value;
 
@@ -35,6 +37,8 @@ namespace piksel
 
   void Camera::moveLateral(float value)
   {
+    value*=movement_speed_;
+
     glm::vec3 delta_pos=glm::cross(target_pos_-cam_pos_,up_);
     delta_pos=glm::normalize(delta_pos);
     delta_pos*=value;
@@ -42,26 +46,30 @@ namespace piksel
     moveBy(delta_pos);
   }
 
-  void Camera::rotateYaw(float radinas)
+  void Camera::rotateYaw(float radians)
   {
+    radians*=rotation_speed_;
+
     glm::vec3 dir=target_pos_-cam_pos_;
-    glm::mat4 rotate=glm::rotate(glm::mat4(1.f),radinas,up_);
+    glm::mat4 rotate=glm::rotate(glm::mat4(1.f),radians,up_);
 
     dir=glm::vec3(rotate*glm::vec4(dir,1.f));
 
     target_pos_=cam_pos_+dir;
   }
 
-  void Camera::rotatePitch(float radinas)
+  void Camera::rotatePitch(float radians)
   {
+    radians*=rotation_speed_;
+
     static float angle=0;
-    if(glm::abs(angle+radinas)>=glm::radians(89.f))
+    if(glm::abs(angle+radians)>=glm::radians(89.f))
       return;
 
-    angle+=radinas;
+    angle+=radians;
     glm::vec3 dir=target_pos_-cam_pos_;
     glm::mat4 rotate=
-      glm::rotate(glm::mat4(1.f),radinas,glm::cross(target_pos_-cam_pos_,up_));
+      glm::rotate(glm::mat4(1.f),radians,glm::cross(target_pos_-cam_pos_,up_));
 
     dir=glm::vec3(rotate*glm::vec4(dir,1.f));
 

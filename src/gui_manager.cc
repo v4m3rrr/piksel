@@ -92,4 +92,9 @@ namespace piksel
   {
     objects_.push_back(object);
   }
+
+  void GuiManager::clear()
+  {
+    objects_.clear();
+  }
 }

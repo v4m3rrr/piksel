@@ -23,6 +23,7 @@ namespace piksel
     void render();
     void ignoreInput(bool enable=true);
     void addObject(std::shared_ptr<GuiObject> object);
+    void clear();
   private:
     std::vector<std::shared_ptr<GuiObject>> objects_;
     bool ignore_input_=false;

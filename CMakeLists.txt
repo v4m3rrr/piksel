@@ -33,7 +33,6 @@ add_library(${PROJECT_NAME} STATIC
     src/liner.cc
     src/object.cc
     src/vehicle_model.cc
-    src/gui_object.cc
     src/gui_manager.cc
     src/exception.cc
 )

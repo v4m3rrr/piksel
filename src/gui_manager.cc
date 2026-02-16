@@ -59,26 +59,32 @@ namespace piksel
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    for(auto object : objects_)
-    {
-      if(ignore_input_)
-        ImGui::Begin(
-            object->getTitle().data(),
-            nullptr,
-            ImGuiWindowFlags_NoInputs | 
-            ImGuiWindowFlags_NoMove | 
-            ImGuiWindowFlags_NoResize |
-            ImGuiWindowFlags_AlwaysAutoResize);
-      else
-        ImGui::Begin(
-            object->getTitle().data(),
-            nullptr,
-            ImGuiWindowFlags_AlwaysAutoResize);
+    if(ignore_input_)
+      ImGui::Begin(
+          "Piksel Gui",
+          nullptr,
+          ImGuiWindowFlags_NoInputs | 
+          ImGuiWindowFlags_NoMove | 
+          ImGuiWindowFlags_NoResize |
+          ImGuiWindowFlags_AlwaysAutoResize);
+    else
+      ImGui::Begin(
+          "Piksel Gui",
+          nullptr,
+          ImGuiWindowFlags_AlwaysAutoResize);
 
-      object->draw();
-      ImGui::End();
+    for(size_t i=0;i<objects_.size();i++)
+    {
+      ImGui::PushID(i);
+      if (ImGui::CollapsingHeader(
+            objects_[i]->getTitle().data(),
+            ImGuiTreeNodeFlags_DefaultOpen))
+        objects_[i]->draw();
+      
+      ImGui::PopID();
     }
 
+    ImGui::End();
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   }

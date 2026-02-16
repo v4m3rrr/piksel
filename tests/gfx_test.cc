@@ -3,6 +3,7 @@
 #include "piksel/gui_manager.hh"
 #include <GLFW/glfw3.h>
 #include <glm/ext/vector_float3.hpp>
+#include <imgui.h>
 
 #ifdef RASPBERRY_PI
 const char* vertex_sh_path=PIKSEL_SHADERS_PATH"/single_color_es.vert";
@@ -26,9 +27,9 @@ public:
   ~InfoPanel() noexcept override=default;
   void draw() override
   {
-    GuiObject::text("Jakis tekst");
-    GuiObject::checkBox("Checkbox cos tam",&czy);
-    GuiObject::inputValue3("Chujniki",&values[0],&values[1],&values[2]);
+    ImGui::Text("Jakis tekst");
+    ImGui::Checkbox("Checkbox cos tam",&czy);
+    ImGui::InputFloat3("Chujniki",values);
   } 
   std::string_view getTitle() const override
   {

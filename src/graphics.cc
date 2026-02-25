@@ -72,6 +72,7 @@ namespace piksel
     {
       drawable->draw(shader_);
     }
+    drawables_.clear();
 
     liner_.draw(project_*cam_.getCameraView());
   }
@@ -91,5 +92,6 @@ namespace piksel
     // Raerly throws
     glClearColor(background_.c.x,background_.c.y,background_.c.z,background_.c.w);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   }
 }

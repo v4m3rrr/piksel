@@ -6,12 +6,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-if(MSVC)
 
-else()
-set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/suppressions.supp")
-set(LSAN_ENV_VAR "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSIONS_FILE}")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/suppressions.supp")
+  set(LSAN_ENV_VAR "LSAN_OPTIONS=suppressions=${LSAN_SUPPRESSIONS_FILE}")
 endif()
+
 set(OpenGL_GL_PREFERENCE "LEGACY")
 
 configure_file(
@@ -73,11 +73,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${Stb_INCLUDE_DIR})
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
 
-if(MSVC)
-
-else()
 # --- Link dependencies ---
 # Link against pthread and dl (required by GLFW on Linux)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 target_link_libraries(${PROJECT_NAME} PRIVATE pthread dl)
 
 # --- Optional: Compiler warnings ---
@@ -98,18 +96,16 @@ set(TEST_SOURCES
 
 foreach(name IN LISTS TEST_SOURCES)
   add_executable(${name} tests/${name}.cc)
-  if(MSVC)
 
-  else()
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_options(${name} PUBLIC -fsanitize=address,undefined,leak)
     target_compile_options( ${name} PUBLIC
       -fsanitize=address,undefined,leak)
   endif()
   target_link_libraries(${name} PRIVATE ${PROJECT_NAME})
   add_test(NAME ${name} COMMAND ${name})
-  if(MSVC)
 
-  else()
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set_tests_properties(${name} PROPERTIES
       ENVIRONMENT "${LSAN_ENV_VAR}")
   endif()

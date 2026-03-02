@@ -33,10 +33,16 @@ namespace piksel
     glDetachShader(program_,vertex_shader.get());
     glDetachShader(program_,fragment_shader.get());
 
-    //glValidateProgram(program_);
+#ifndef __APPLE__
+    glValidateProgram(program_);
+#endif
 
     GLint success;
+#ifdef __APPLE__
+    glGetProgramiv(program_,GL_LINK_STATUS,&success);
+#else
     glGetProgramiv(program_,GL_VALIDATE_STATUS,&success);
+#endif
     if(success==GL_FALSE)
     {
       GLint log_info_len;

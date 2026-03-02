@@ -33,7 +33,7 @@ namespace piksel
     glDetachShader(program_,vertex_shader.get());
     glDetachShader(program_,fragment_shader.get());
 
-    glValidateProgram(program_);
+    //glValidateProgram(program_);
 
     GLint success;
     glGetProgramiv(program_,GL_VALIDATE_STATUS,&success);

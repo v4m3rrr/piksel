@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+if(WIN32)
+    set(VCPKG_TARGET_TRIPLET "x64-windows-static-md" CACHE STRING "" FORCE)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   set(LSAN_SUPPRESSIONS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/suppressions.supp")
@@ -52,14 +55,16 @@ target_include_directories(${PROJECT_NAME}
 # --- GLFW ---
 find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
+target_compile_definitions(${PROJECT_NAME} PUBLIC GLFW_STATIC)
 
 # --- OpenGL ---
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 
+
 # --- glm ---
 find_package(glm CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm-header-only)
 
 # --- glad ---
 find_package(glad CONFIG REQUIRED)

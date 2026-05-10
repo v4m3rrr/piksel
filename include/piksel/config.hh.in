@@ -1,4 +1,0 @@
-#pragma once
-
-#define PIKSEL_ASSETS_PATH "@CMAKE_CURRENT_SOURCE_DIR@/assets"
-#define PIKSEL_SHADERS_PATH "@CMAKE_CURRENT_SOURCE_DIR@/shaders"
